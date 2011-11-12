@@ -1,0 +1,14 @@
+VARIANT=desktop
+ARCHS="i386 amd64"
+DIST=sid
+MIRROR=http://ftp.fi.debian.org/debian/
+SCRIPT=/usr/share/debootstrap/scripts/sid
+COMPONENTS=main
+PACKAGES="gnome-panel bzr"
+KERNEL=linux-image-amd64
+SQUASHFS="squashfs-tools"
+ISOLINUX=syslinux-themes-debian-squeeze
+ISOLINUX_PATH=/usr/share/syslinux/themes/debian-squeeze/isolinux-live
+CDVOLUME=Debian
+LIVE_PACKAGES="live-boot"
+LIVE_SYSTEM="live"

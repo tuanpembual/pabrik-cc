@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/init-variables
+
+PATH=$CC_DIR:$PATH
+check_variable CONFIG
+check_variable DISK_ID 
+
+if [ -f $CONFIG ];then
+    . $CONFIG
+else
+    echo "$CONFIG does not exist. Can't continue"
+    exit 1
+fi
+
+mkdir -p $TMP/$DISK_ID-publish
+for ARCH in $ARCHS;do
+    export ARCH=$ARCH
+    echo "Building ISO for $ARCH $DIST"
+    . $CC_DIR/functions
+    . $CC_DIR/debootstrap
+    . $CC_DIR/install-system
+    . $CC_DIR/squashfs
+    . $CC_DIR/isolinux
+    . $CC_DIR/genisoimage
+
+    list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list
+    mv $TMP/$DISK_ID-binary.iso $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.iso
+done

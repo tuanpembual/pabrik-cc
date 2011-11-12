@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable DIST
+check_variable MIRROR
+check_variable DISK_ID
+check_variable COMPONENTS
+check_variable PACKAGES
+check_variable KERNEL 
+check_variable LIVE_SYSTEM 
+
+cat << @@EOF > $ROOTFS/etc/apt/sources.list
+deb $MIRROR $DIST $COMPONENTS 
+@@EOF
+
+refresh_repository
+install_package $PACKAGES $KERNEL
+
+if [ -n "$BLACKLIST" ];then
+    remove_package $BLACKLIST
+fi
+
+mkdir -p $DISK/$LIVE_SYSTEM
+printf $(du -sx --block-size=1 $ROOTFS | cut -f1) > $DISK/$LIVE_SYSTEM/filesystem.size
+list_rootfs_packages_to_file $DISK/$LIVE_SYSTEM/filesystem.manifest
+
+if [ -n "$LIVE_PACKAGES" ];then
+    install_package $LIVE_PACKAGES
+fi
+
+cp $ROOTFS/boot/initrd.img* $DISK/$LIVE_SYSTEM/initrd.img
+cp $ROOTFS/boot/vmlinuz* $DISK/$LIVE_SYSTEM/vmlinuz

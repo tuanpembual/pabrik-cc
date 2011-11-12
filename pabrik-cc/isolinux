@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable ISOLINUX
+check_variable ISOLINUX_PATH
+
+install_package $ISOLINUX
+mkdir -p $DISK/isolinux
+cp $ROOTFS/$ISOLINUX_PATH/* $DISK/isolinux
+remove_package $ISOLINUX

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable ARCH
+check_variable DIST
+check_variable MIRROR
+check_variable DISK_ID
+check_variable SCRIPT
+
+echo "Debootstrap to $DIST"
+/usr/sbin/debootstrap $DIST $ROOTFS $MIRROR $SCRIPT

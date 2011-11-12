@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable CDVOLUME
+
+ISOOPT="-v -A BlankOnCDFactory -p BlankOn -publisher BlankOn -V $CDVOLUME"
+ISOOPT="$ISOOPT -no-emul-boot -boot-load-size 4 -boot-info-table"
+ISOOPT="$ISOOPT -r -b isolinux/isolinux.bin -c isolinux/boot.cat"
+
+# Generates the iso image
+pushd $TMP
+genisoimage ${ISOOPT} -o $DISK_ID-binary.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
+popd

@@ -1,0 +1,204 @@
+#!/bin/bash
+
+set -e
+
+. $CC_DIR/init-variables
+
+check_variable ARCH
+
+do_chroot() {
+    chroot $ROOTFS $@
+}
+
+mute_debconf() {
+    DEBCONF_0=`echo get debconf/frontend | do_chroot debconf-communicate 2>/dev/null`
+    DEBCONF_STATUS=`echo $DEBCONF_0|cut -f1 -d' '`
+    DEBCONF_VALUE=`echo $DEBCONF_0|cut -f2 -d' '`
+
+    echo set debconf/frontend Noninteractive | LC_ALL=C do_chroot debconf-communicate 2>/dev/null
+}
+
+unmute_debconf() {
+    if [ -z $DEBCONF_VALUE ];then
+        echo set debconf/frontend $DEBCONF_VALUE | LC_ALL=C do_chroot debconf-communicate 2>/dev/null
+    fi
+}
+
+clean_packages() {
+    do_chroot apt-get --force-yes --yes clean 
+    do_chroot apt-get --force-yes --yes autoremove
+    rm -f $ROOTFS/var/lib/dpkg/*-old
+    rm -f $ROOTFS/var/cache/debconf/*-old
+}
+
+setup_diversion() {
+    for file in $DIVERTS; do
+        mkdir -p ${ROOTFS}/${file%/*}
+        do_chroot dpkg-divert --add --local --divert /${file}.livecd --rename /${file}
+        cp ${ROOTFS}/bin/true ${ROOTFS}/$file
+    done
+    cat << @@EOF > ${ROOTFS}/usr/sbin/mkinitrd
+#!/usr/bin/python
+import sys
+for i in range(len(sys.argv)):
+    if sys.argv[i]=='-o':
+        open(sys.argv[i+1],"w")
+@@EOF
+    chmod 755 ${ROOTFS}/usr/sbin/mkinitrd
+}
+
+teardown_diversion() {
+    for file in $DIVERTS; do
+        ls -ld ${ROOTFS}/${file} ${ROOTFS}/${file}.livecd || true
+        rm -f ${ROOTFS}/${file}
+        do_chroot dpkg-divert --remove --rename /${file}
+    done
+}
+
+setup_mounts() {
+    do_chroot mount -t proc proc /proc
+    do_chroot mount -t sysfs sys /sys
+    do_chroot mount -t devpts devpts-live /dev/pts
+    MOUNTS=1
+}
+
+teardown_mounts() {
+    do_chroot umount /dev/pts
+    do_chroot umount /sys
+    do_chroot umount /proc
+    unset MOUNTS
+}
+
+install_package() {
+    set +e
+    mute_debconf
+    setup_diversion
+    setup_mounts
+    echo "Installing $@"
+    do_chroot apt-get install --force-yes --yes $@
+    clean_packages
+    teardown_mounts
+    teardown_diversion
+    unmute_debconf
+    set -e
+}
+
+install_package_no_recommends() {
+    install_package --no-install-recommends $@
+}
+
+remove_package() {
+    set +e
+    mute_debconf
+    setup_diversion
+    setup_mounts
+    echo "Removing $@"
+    do_chroot apt-get purge --force-yes --yes $@
+    clean_packages
+    teardown_mounts
+    teardown_diversion
+    unmute_debconf
+    set -e
+}
+
+check_mounts_and_dismount() {
+    mount
+    if [ "x$MOUNTS" = "x1" ];then
+        echo "Cleaning unclean mounts $MOUNTS"
+        teardown_mounts
+    fi
+}
+
+refresh_repository() {
+    cp /etc/resolv.conf $ROOTFS/etc
+    set +e
+    do_chroot apt-get update
+    set -e
+}
+
+record_names() {
+    while true;do
+        read PACKAGE VERSION
+        if [ -n "$PACKAGE" -a -n "$VERSION" -a -n "$1" -a -n $DISK_ID ];then
+            mkdir -p $TMP/$DISK_ID-packages/$1/$PACKAGE
+            touch $TMP/$DISK_ID-packages/$1/$PACKAGE/$VERSION
+        else
+            break
+        fi
+    done
+}
+
+list_rootfs_packages() {
+    cat << @@EOF > ${ROOTFS}/tmp/xdpkg-query
+#!/bin/bash
+dpkg-query -W -f='\${PackageSpec} \${Version}\n' 
+@@EOF
+    chmod +x $ROOTFS/tmp/xdpkg-query
+    set +e
+    do_chroot /tmp/xdpkg-query
+    set -e
+    rm -f $ROOTFS/tmp/xdpkg-query
+}
+
+list_rootfs_packages_to_directory() {
+    list_rootfs_packages | record_names current
+}
+
+
+list_rootfs_packages_to_file() {
+    list_rootfs_packages > $1 
+}
+
+reconciliate_packages() {
+    set +e
+    echo -n > $ROOTFS/tmp/list
+    while true;do
+        read PACKAGE VERSION
+        if [ -n "$PACKAGE" -a -n "$VERSION" ];then
+            # PACKAGE exists on current rootfs
+            if [ -d $TMP/$DISK_ID-packages/current/$PACKAGE ];then
+                if [ ! -f $TMP/$DISK_ID-packages/current/$PACKAGE/$VERSION ];then
+                    echo "Marking $PACKAGE to be updated to version $VERSION"
+                    # version is not same so we mark to upgrade/downgrade
+                    mkdir -p $TMP/$DISK_ID-packages/update/$PACKAGE/
+                    touch $TMP/$DISK_ID-packages/update/$PACKAGE/$VERSION
+                    echo "$PACKAGE install" >> $ROOTFS/tmp/list
+                    DO_UPDATE=1
+                fi
+            else
+                echo "Marking $PACKAGE to be added"
+                mkdir -p $TMP/$DISK_ID-packages/add/$PACKAGE/
+                touch $TMP/$DISK_ID-packages/add/$PACKAGE/$VERSION
+                echo "$PACKAGE install" >> $ROOTFS/tmp/list
+                DO_ADD=1
+            fi
+        else
+            break
+        fi
+    done
+    for i in `find $TMP/$DISK_ID-packages/current/* -type d`;do
+        PACKAGE=`basename $i`
+        if [ -d $TMP/$DISK_ID-packages/update/$PACKAGE -o -d $TMP/$DISK_ID-packages/add/$PACKAGE ];then
+            X=1 
+        else
+            DO_REMOVE=1
+            echo "Marking $PACKAGE to be removed"
+            mkdir -p $TMP/$DISK_ID-packages/remove/$PACKAGE
+            echo "$PACKAGE purge" >> $ROOTFS/tmp/list
+        fi
+    done
+
+    refresh_repository
+    mute_debconf
+    setup_diversion
+    setup_mounts
+    do_chroot dpkg --set-selections < $ROOTFS/tmp/list
+    do_chroot apt-get --yes --force-yes -u dselect-upgrade
+    clean_packages
+    teardown_mounts
+    teardown_diversion
+    unmute_debconf
+
+    set -e
+}
+

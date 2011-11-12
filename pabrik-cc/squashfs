@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+check_variable LIVE_SYSTEM
+
+NUMPROC=`grep processor /proc/cpuinfo |wc -l`
+
+rm -f $ROOTFS/filesystem.squashfs
+
+if [ -n $SQUASHFS ];then
+    install_package $SQUASHFS
+fi
+
+# Creates a squashfs image and copy it to live 
+do_chroot mksquashfs / filesystem.squashfs -b 1048576 -processors $NUMPROC -no-progress -e /filesystem.squashfs /unmounted
+cp $ROOTFS/filesystem.squashfs $DISK/$LIVE_SYSTEM/
