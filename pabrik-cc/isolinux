@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 if [ -z $INTERNALCALL ];then
     echo "This script should not be called by you. Thanks for calling."

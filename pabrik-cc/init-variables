@@ -22,7 +22,10 @@ ROOTFS=$TMP/$ROOTFS_BUILD
 DISK=$TMP/$DISK_BUILD
 unset MOUNTS
 
-DIVERTS="usr/sbin/mkinitrd usr/sbin/invoke-rc.d" 
+DIVERTS="usr/sbin/mkinitrd usr/sbin/invoke-rc.d /sbin/start-stop-daemon" 
+
+export DEBIAN_FRONTEND=noninteractive 
+export DEBCONF_NONINTERACTIVE_SEEN=true
 
 check_variable DISK_ID
 check_variable TMP 

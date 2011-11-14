@@ -10,6 +10,13 @@ do_chroot() {
     chroot $ROOTFS $@
 }
 
+clean_packages() {
+    do_chroot apt-get --force-yes --yes clean 
+    do_chroot apt-get --force-yes --yes autoremove
+    rm -f $ROOTFS/var/lib/dpkg/*-old
+    rm -f $ROOTFS/var/cache/debconf/*-old
+}
+
 mute_debconf() {
     DEBCONF_0=`echo get debconf/frontend | do_chroot debconf-communicate 2>/dev/null`
     DEBCONF_STATUS=`echo $DEBCONF_0|cut -f1 -d' '`
@@ -22,13 +29,6 @@ unmute_debconf() {
     if [ -z $DEBCONF_VALUE ];then
         echo set debconf/frontend $DEBCONF_VALUE | LC_ALL=C do_chroot debconf-communicate 2>/dev/null
     fi
-}
-
-clean_packages() {
-    do_chroot apt-get --force-yes --yes clean 
-    do_chroot apt-get --force-yes --yes autoremove
-    rm -f $ROOTFS/var/lib/dpkg/*-old
-    rm -f $ROOTFS/var/cache/debconf/*-old
 }
 
 setup_diversion() {
@@ -56,30 +56,41 @@ teardown_diversion() {
 }
 
 setup_mounts() {
-    do_chroot mount -t proc proc /proc
-    do_chroot mount -t sysfs sys /sys
-    do_chroot mount -t devpts devpts-live /dev/pts
+    cat << @@EOF > ${ROOTFS}/tmp/mount
+mount
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devpts devpts-live /dev/pts
+@@EOF
+    cat << @@EOF > ${ROOTFS}/tmp/umount
+umount /proc
+umount /sys
+umount /dev/pts
+mount
+@@EOF
+    chmod +x ${ROOTFS}/tmp/mount ${ROOTFS}/tmp/umount
+    do_chroot /tmp/mount
     MOUNTS=1
 }
 
 teardown_mounts() {
-    do_chroot umount /dev/pts
-    do_chroot umount /sys
-    do_chroot umount /proc
+    do_chroot /tmp/umount
+    rm $ROOTFS/tmp/mount
+    rm $ROOTFS/tmp/umount
     unset MOUNTS
 }
 
 install_package() {
     set +e
-    mute_debconf
     setup_diversion
     setup_mounts
+    mute_debconf
     echo "Installing $@"
     do_chroot apt-get install --force-yes --yes $@
     clean_packages
+    unmute_debconf
     teardown_mounts
     teardown_diversion
-    unmute_debconf
     set -e
 }
 
@@ -89,15 +100,15 @@ install_package_no_recommends() {
 
 remove_package() {
     set +e
-    mute_debconf
     setup_diversion
     setup_mounts
+    mute_debconf
     echo "Removing $@"
     do_chroot apt-get purge --force-yes --yes $@
     clean_packages
+    unmute_debconf
     teardown_mounts
     teardown_diversion
-    unmute_debconf
     set -e
 }
 
@@ -189,15 +200,15 @@ reconciliate_packages() {
     done
 
     refresh_repository
-    mute_debconf
     setup_diversion
     setup_mounts
+    mute_debconf
     do_chroot dpkg --set-selections < $ROOTFS/tmp/list
     do_chroot apt-get --yes --force-yes -u dselect-upgrade
     clean_packages
+    unmute_debconf
     teardown_mounts
     teardown_diversion
-    unmute_debconf
 
     set -e
 }
