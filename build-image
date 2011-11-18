@@ -1,0 +1,46 @@
+#!/bin/bash
+
+export INTERNALCALL=1
+
+if [ -d /usr/share/pabrik-cc ]; then
+    export CC_DIR=/usr/share/pabrik-cc
+elif [ -d `pwd`/pabrik-cc ];then
+    export CC_DIR=./pabrik-cc
+fi
+
+if [ -z $CC_DIR ];then
+    echo "Broken setup, CC_DIR is not found"
+    exit 1
+fi
+
+while getopts ":i:f:t:" opt; do
+    case $opt in
+      i)
+        echo "Using ID $OPTARG" >&2
+        export DISK_ID=$OPTARG
+        ;;
+      f)
+        echo "Using profile from file $OPTARG" >&2
+        export CONFIG=$OPTARG
+        ;;
+      t)
+        echo "Using temporary directory $OPTARG" >&2
+        export TMP=$OPTARG
+        ;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+    esac
+done
+
+if [ -z "$CONFIG" -o -z "$DISK_ID" -o -z "$TMP" ];then
+    echo "Usage: $0 -f PROFILE_FILE -i ID -t TMP_DIRECTORY"
+    exit 1
+fi
+
+$CC_DIR/build-iso
