@@ -27,5 +27,9 @@ export DIVERTS="usr/sbin/mkinitrd usr/sbin/invoke-rc.d /sbin/start-stop-daemon"
 export DEBIAN_FRONTEND=noninteractive 
 export DEBCONF_NONINTERACTIVE_SEEN=true
 
+if [ -n $MAX_SIZE ];then
+    export MAX_SIZE_BYTE=`$MAX_SIZE \* 1024 \* 1024`
+fi
+
 check_variable DISK_ID
 check_variable TMP 
