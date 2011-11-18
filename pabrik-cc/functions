@@ -81,7 +81,6 @@ teardown_mounts() {
 }
 
 install_package() {
-    set +e
     setup_diversion
     setup_mounts
     mute_debconf
@@ -91,7 +90,6 @@ install_package() {
     unmute_debconf
     teardown_mounts
     teardown_diversion
-    set -e
 }
 
 install_package_no_recommends() {
@@ -99,7 +97,6 @@ install_package_no_recommends() {
 }
 
 remove_package() {
-    set +e
     setup_diversion
     setup_mounts
     mute_debconf
@@ -109,7 +106,6 @@ remove_package() {
     unmute_debconf
     teardown_mounts
     teardown_diversion
-    set -e
 }
 
 check_mounts_and_dismount() {
@@ -122,9 +118,7 @@ check_mounts_and_dismount() {
 
 refresh_repository() {
     cp /etc/resolv.conf $ROOTFS/etc
-    set +e
     do_chroot apt-get update
-    set -e
 }
 
 record_names() {
@@ -145,9 +139,7 @@ list_rootfs_packages() {
 dpkg-query -W -f='\${PackageSpec} \${Version}\n' 
 @@EOF
     chmod +x $ROOTFS/tmp/xdpkg-query
-    set +e
     do_chroot /tmp/xdpkg-query
-    set -e
     rm -f $ROOTFS/tmp/xdpkg-query
 }
 
@@ -161,7 +153,6 @@ list_rootfs_packages_to_file() {
 }
 
 reconciliate_packages() {
-    set +e
     echo -n > $ROOTFS/tmp/list
     while true;do
         read PACKAGE VERSION
@@ -209,7 +200,5 @@ reconciliate_packages() {
     unmute_debconf
     teardown_mounts
     teardown_diversion
-
-    set -e
 }
 
