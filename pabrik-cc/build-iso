@@ -25,11 +25,11 @@ for ARCH in $ARCHS;do
     export ARCH=$ARCH
     echo "Building ISO for $ARCH $DIST"
     . $CC_DIR/functions
-    . $CC_DIR/debootstrap
-    . $CC_DIR/install-system
-    . $CC_DIR/squashfs
-    . $CC_DIR/isolinux
-    . $CC_DIR/genisoimage
+    $CC_DIR/debootstrap
+    $CC_DIR/install-system
+    $CC_DIR/squashfs
+    $CC_DIR/isolinux
+    $CC_DIR/genisoimage
 
     list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list
     mv $TMP/$DISK_ID-binary.iso $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.iso
