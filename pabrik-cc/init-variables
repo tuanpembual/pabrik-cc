@@ -11,18 +11,18 @@ check_variable() {
 }
 
 
-LC_ALL=C
-LANG=C
-DISK_MOUNTED=$DISK_ID-mounted
-ROOTFS_MOUNTED=$DISK_ID-rootfs-mounted
-DISK_BUILD=$DISK_ID-disk-$ARCH
-ROOTFS_BUILD=$DISK_ID-rootfs-$ARCH
+export LC_ALL=C
+export LANG=C
+export DISK_MOUNTED=$DISK_ID-mounted
+export ROOTFS_MOUNTED=$DISK_ID-rootfs-mounted
+export DISK_BUILD=$DISK_ID-disk-$ARCH
+export ROOTFS_BUILD=$DISK_ID-rootfs-$ARCH
 
-ROOTFS=$TMP/$ROOTFS_BUILD
-DISK=$TMP/$DISK_BUILD
+export ROOTFS=$TMP/$ROOTFS_BUILD
+export DISK=$TMP/$DISK_BUILD
 unset MOUNTS
 
-DIVERTS="usr/sbin/mkinitrd usr/sbin/invoke-rc.d /sbin/start-stop-daemon" 
+export DIVERTS="usr/sbin/mkinitrd usr/sbin/invoke-rc.d /sbin/start-stop-daemon" 
 
 export DEBIAN_FRONTEND=noninteractive 
 export DEBCONF_NONINTERACTIVE_SEEN=true
