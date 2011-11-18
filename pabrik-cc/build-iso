@@ -32,5 +32,4 @@ for ARCH in $ARCHS;do
     $CC_DIR/genisoimage
 
     list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list
-    mv $TMP/$DISK_ID-binary.iso $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.iso
 done

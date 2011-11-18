@@ -10,6 +10,9 @@ fi
 . $CC_DIR/functions
 
 check_variable CDVOLUME
+check_variable ARCH
+check_variable DIST
+check_variable VARIANT
 
 ISOOPT="-v -A BlankOnCDFactory -p BlankOn -publisher BlankOn -V $CDVOLUME"
 ISOOPT="$ISOOPT -no-emul-boot -boot-load-size 4 -boot-info-table"
@@ -17,5 +20,6 @@ ISOOPT="$ISOOPT -r -b isolinux/isolinux.bin -c isolinux/boot.cat"
 
 # Generates the iso image
 pushd $TMP
-genisoimage ${ISOOPT} -o $DISK_ID-binary.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
+genisoimage ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
 popd
+
