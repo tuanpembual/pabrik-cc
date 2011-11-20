@@ -1,4 +1,5 @@
-# THis is the variant name
+# THis is the variant name, you can use any names
+# Useful if you have more than one variant, eg. desktop, server, etc
 VARIANT=desktop
 
 # the architectures built
@@ -6,9 +7,9 @@ ARCHS="i386 amd64"
 
 # These are used by debootstrap
 # The name of the distribution, 
-DIST=rote
+DIST=distributionname
 # The mirror
-MIRROR=http://arsip-dev.blankonlinux.or.id/blankon-debia
+MIRROR=http://your.repository/distribution
 # The debootstrap script
 SCRIPT=/usr/share/debootstrap/scripts/sid
 # The components
@@ -21,6 +22,11 @@ PACKAGES="bash"
 
 # This is the kernel package
 KERNEL=linux-image-generic
+
+# You can uncomment this to install additional packages which only
+# lives in the LIVE image, but will not installed to hard drive
+# (casper only, see LIVE_SYSTEM below)
+#LIVE_PACKAGES="ubiquity"
 
 # This is the squashfs tools package name
 SQUASHFS="squashfs-tools"
@@ -38,6 +44,8 @@ CDVOLUME=BlankOn
 
 # This is used by the live system
 # This is the live package
+# For DEbian these would be live-boot and live
+# For Ubuntu these would be casper and casper
 LIVE_PACKAGES="casper"
 LIVE_SYSTEM="casper"
 
@@ -45,14 +53,14 @@ LIVE_SYSTEM="casper"
 MAX_SIZE=700
 
 # This is the email templates resides, you must provide FAIL.txt and SUCCESS.txt email templates, honoring the RFC-822 format
-TEMPLATES_PATH=/media/data/dev/rote/pabrik-cd/templates
+TEMPLATES_PATH=/the/path/providing/the/email/templates
 
 # if set send email to the recipient 
-RECIPIENT=mdamt@di.blankon.in
+RECIPIENT=email@host.net
 
 # This is the place you publish the resulting files, failed and successful ones
-# This is the disk path you would put the files
-PUBLISH_PATH=/media/data/dev/rote/pabrik-cd/publish
+# This is the disk path you would put the files, accessible by the webserver providing the PUBLISH_URL below
+PUBLISH_PATH=/the/path/served/by/the/webserver
 
-# This is the URL pointing to the files
+# This is the URL pointing to the files, you can use $DISK_ID as the directory name
 PUBLISH_URL=http://xxx.yyy.zzz/aaa/bbb/$DISK_ID
