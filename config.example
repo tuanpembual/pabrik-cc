@@ -1,0 +1,58 @@
+# THis is the variant name
+VARIANT=desktop
+
+# the architectures built
+ARCHS="i386 amd64"
+
+# These are used by debootstrap
+# The name of the distribution, 
+DIST=rote
+# The mirror
+MIRROR=http://arsip-dev.blankonlinux.or.id/blankon-debia
+# The debootstrap script
+SCRIPT=/usr/share/debootstrap/scripts/sid
+# The components
+COMPONENTS="main"
+
+###
+
+# This is the list of the packages installed in the CD
+PACKAGES="bash"
+
+# This is the kernel package
+KERNEL=linux-image-generic
+
+# This is the squashfs tools package name
+SQUASHFS="squashfs-tools"
+
+# ISOLINUX
+# This is the isolinux theme package name
+ISOLINUX=blankon-image-syslinux
+# This is the path that the isolinux theme above provides the files installed to
+ISOLINUX_PATH=/usr/share/blankon-image-syslinux/
+
+# This is used by genisoimage
+# This is the volume name
+CDVOLUME=BlankOn
+
+
+# This is used by the live system
+# This is the live package
+LIVE_PACKAGES="casper"
+LIVE_SYSTEM="casper"
+
+# This is the maximum size the ISO would produce in megabytes, if more that this value, there will be an empty file called OVERSIZED
+MAX_SIZE=700
+
+# This is the email templates resides, you must provide FAIL.txt and SUCCESS.txt email templates, honoring the RFC-822 format
+TEMPLATES_PATH=/media/data/dev/rote/pabrik-cd/templates
+
+# if set send email to the recipient 
+RECIPIENT=mdamt@di.blankon.in
+
+# This is the place you publish the resulting files, failed and successful ones
+# This is the disk path you would put the files
+PUBLISH_PATH=/media/data/dev/rote/pabrik-cd/publish
+
+# This is the URL pointing to the files
+PUBLISH_URL=http://xxx.yyy.zzz/aaa/bbb/$DISK_ID
