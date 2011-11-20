@@ -23,10 +23,11 @@ pushd $TMP
 genisoimage ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
 popd
 
-if [ -n $MAX_SIZE_BYTE -a $MAX_SIZE_BYTE -gt 0 -a -f $DIST-$VARIANT-$ARCH.iso];then
+if [ -n $MAX_SIZE_BYTE -a $MAX_SIZE_BYTE -gt 0 -a -f $DIST-$VARIANT-$ARCH.iso ];then
     A=`du -b $DIST-$VARIANT-$ARCH.iso |cut -f1`
     if [ $A -gt $MAX_SIZE_BYTE ];then
         touch $DIST-$VARIANT-$ARCH.iso.OVERSIZED
     fi
 fi
 
+mv $TMP/$DIST-$VARIANT-$ARCH.iso* $TMP/$DISK_ID-publish
