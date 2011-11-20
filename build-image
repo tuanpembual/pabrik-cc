@@ -41,7 +41,7 @@ done
 if [ -z $DISK_ID ];then
     BASE=`date "+%Y%m%d"`
     if [ -d $TMP/$BASE-publish ];then
-        for i in `seq -f "%03.0f" 1 10`;do
+        for i in `seq -f "%03.0f" 1 100`;do
             CHECK=$BASE-$i
             if [ ! -d $TMP/$CHECK-publish ];then
                export DISK_ID=$CHECK 
