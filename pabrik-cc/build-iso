@@ -91,7 +91,7 @@ if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
 fi
 
 if [ -n $PUBLISH_PATH ];then
-    mkdir -p $PUBLISH_PATH
+    mkdir -p $PUBLISH_PATH/$DISK_ID
     mv $TMP/$DISK_ID-publish/* $PUBLISH_PATH/$DISK_ID
 fi
 
