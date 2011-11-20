@@ -40,21 +40,22 @@ done
 
 if [ -z $DISK_ID ];then
     BASE=`date "+%Y%m%d"`
-    if [ -d $TMP/$BASE ];then
+    if [ -d $TMP/$BASE-publish ];then
         for i in `seq -f "%03.0f" 1 10`;do
             CHECK=$BASE-$i
-            if [ ! -d $TMP/$BASE ];then
+            if [ ! -d $TMP/$CHECK-publish ];then
                export DISK_ID=$CHECK 
                break
             fi
         done
-        if [ -z $DISK_ID ];then
+        if [ -z $DISK_ID ];then
             echo "There are already 100 attempts to build today, come again tomorrow"
             exit 1
         fi
     else
         export DISK_ID=$BASE
     fi
+    echo "Using id $DISK_ID"
 fi
 
 if [ -z "$CONFIG" -o -z "$DISK_ID" -o -z "$TMP" ];then
