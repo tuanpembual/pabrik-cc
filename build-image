@@ -43,4 +43,4 @@ if [ -z "$CONFIG" -o -z "$DISK_ID" -o -z "$TMP" ];then
     exit 1
 fi
 
-$CC_DIR/build-iso
+$CC_DIR/build-iso 2>&1

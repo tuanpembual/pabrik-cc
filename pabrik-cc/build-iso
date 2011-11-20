@@ -7,11 +7,8 @@ if [ -z $INTERNALCALL ];then
     exit 1
 fi
 
-. $CC_DIR/init-variables
 
 PATH=$CC_DIR:$PATH
-check_variable CONFIG
-check_variable DISK_ID 
 
 if [ -f $CONFIG ];then
     . $CONFIG
@@ -19,6 +16,33 @@ else
     echo "$CONFIG does not exist. Can't continue"
     exit 1
 fi
+
+. $CC_DIR/init-variables
+# Reexport variables
+export DISK_ID
+export CONFIG
+export TMP
+export CC_DIR
+export PATH
+export INTERNALCALL
+
+export VARIANT
+export DIST
+export MIRROR
+export SCRIPT
+export COMPONENTS
+export PACKAGES
+export KERNEL
+export SQUASHFS
+export ISOLINUX
+export ISOLINUX_PATH
+export CDVOLUME
+export LIVE_PACKAGES
+export LIVE_SYSTEM
+export MAX_SIZE
+
+check_variable DISK_ID 
+
 
 mkdir -p $TMP/$DISK_ID-publish
 for ARCH in $ARCHS;do
