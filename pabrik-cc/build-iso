@@ -42,6 +42,12 @@ export LIVE_SYSTEM
 export MAX_SIZE
 
 check_variable DISK_ID 
+check_variable TEMPLATES_PATH
+
+if [ ! -d $TEMPLATES_PATH ];then
+    echo "TEMPLATES_PATH is not defined in the CONFIG file"
+    exit 1
+fi
 
 mkdir -p $TMP/$DISK_ID-publish
 for ARCH in $ARCHS;do
@@ -49,25 +55,45 @@ for ARCH in $ARCHS;do
     echo "Building ISO for $ARCH $DIST"
     . $CC_DIR/functions
     unset CONTINUE
-    $CC_DIR/debootstrap && CONTINUE=1
+    echo "Debootstrap"
+    /usr/bin/time $CC_DIR/debootstrap && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     unset CONTINUE
-    $CC_DIR/install-system && CONTINUE=1
+    echo "Installing system"
+    /usr/bin/time $CC_DIR/install-system && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     unset CONTINUE
-    $CC_DIR/squashfs && CONTINUE=1
+    echo "Making squashfs"
+    /usr/bin/time $CC_DIR/squashfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     unset CONTINUE
-    $CC_DIR/isolinux && CONTINUE=1
+    echo "Installing ISOLINUX"
+    /usr/bin/time $CC_DIR/isolinux && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     unset CONTINUE
-    $CC_DIR/genisoimage && CONTINUE=1
+    echo "Generating image"
+    /usr/bin/time $CC_DIR/genisoimage && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
     list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list && CONTINUE=1
     
 done
+
+if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
+    if [ -z $CONTINUE ];then
+        SOURCE=FAIL.txt
+    else
+        SOURCE=SUCCESS.txt
+    fi
+    echo "Sending email to $RECIPIENT"
+    sed -e "s/RECIPIENT/$RECIPIENT/g" -e "s|PUBLISH_URL|$PUBLISH_URL|g" -e "s/DIST/$DIST/g" -e "s/VARIANT/$VARIANT/g" < $TEMPLATES_PATH/$SOURCE | sendmail $RECIPIENT 
+fi
+
+if [ -n $PUBLISH_PATH ];then
+    mkdir -p $PUBLISH_PATH
+    mv $TMP/$DISK_ID-publish $PUBLISH_PATH/$DISK_ID
+fi
 
 if [ -z $CONTINUE ];then 
 exit 1;
