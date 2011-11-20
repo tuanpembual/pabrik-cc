@@ -43,17 +43,32 @@ export MAX_SIZE
 
 check_variable DISK_ID 
 
-
 mkdir -p $TMP/$DISK_ID-publish
 for ARCH in $ARCHS;do
     export ARCH=$ARCH
     echo "Building ISO for $ARCH $DIST"
     . $CC_DIR/functions
-    $CC_DIR/debootstrap
-    $CC_DIR/install-system
-    $CC_DIR/squashfs
-    $CC_DIR/isolinux
-    $CC_DIR/genisoimage
+    unset CONTINUE
+    $CC_DIR/debootstrap && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+    unset CONTINUE
+    $CC_DIR/install-system && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+    unset CONTINUE
+    $CC_DIR/squashfs && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+    unset CONTINUE
+    $CC_DIR/isolinux && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+    unset CONTINUE
+    $CC_DIR/genisoimage && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
 
-    list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list
+    unset CONTINUE
+    list_rootfs_packages_to_file $TMP/$DISK_ID-publish/$DIST-$VARIANT-$ARCH.list && CONTINUE=1
+    
 done
+
+if [ -z $CONTINUE ];then 
+exit 1;
+fi
