@@ -92,7 +92,7 @@ fi
 
 if [ -n $PUBLISH_PATH ];then
     mkdir -p $PUBLISH_PATH
-    mv $TMP/$DISK_ID-publish $PUBLISH_PATH/$DISK_ID
+    mv $TMP/$DISK_ID-publish/* $PUBLISH_PATH/$DISK_ID
 fi
 
 if [ -z $CONTINUE ];then 
