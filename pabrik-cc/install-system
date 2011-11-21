@@ -21,6 +21,14 @@ cat << @@EOF > $ROOTFS/etc/apt/sources.list
 deb $MIRROR $DIST $COMPONENTS 
 @@EOF
 
+if [ -n $EXTRA_REPOSITORY ];then
+    echo $EXTRA_REPOSITORY | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/extra.list
+fi
+
+if [ -n $EXTRA_REPOSITORY_HIDDEN ];then
+    echo $EXTRA_REPOSITORY_HIDDEN | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/hidden.list
+fi
+
 refresh_repository
 install_package $PACKAGES $KERNEL
 
@@ -38,3 +46,8 @@ fi
 
 cp $ROOTFS/boot/initrd.img* $DISK/$LIVE_SYSTEM/initrd.img
 cp $ROOTFS/boot/vmlinuz* $DISK/$LIVE_SYSTEM/vmlinuz
+
+if [ -d $ROOTFS/etc/apt/sources.list.d/hidden.list ];then
+    rm -f $ROOTFS/etc/apt/sources.list.d/hidden.list
+    refresh_repository
+fi

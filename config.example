@@ -15,6 +15,22 @@ SCRIPT=/usr/share/debootstrap/scripts/sid
 # The components
 COMPONENTS="main"
 
+# Extra repository if you need more software coming from another repositories,
+# this is a full sources.list lines, and new line is represented by a pipe
+# you can add as many as you want. This will go to
+# /etc/apt/sources.list.d/extra.list
+# EXTRA_REPOSITORY="deb http://another.repository/line distribution components|"
+# EXTRA_REPOSITORY+="deb http://yet.another.repository/line distribution components|"
+# EXTRA_REPOSITORY+="deb http://yet.more.another.repository/line distribution components|"
+
+# Hidden extra repository if you need more software coming from another repositories,
+# but you don't want the end user to see them. The repository will be removed from
+# /etc/apt/sources.list.d after installation of the packages
+# This bear the same format as EXTRA_REPOSITORY
+# EXTRA_REPOSITORY_HIDDEN="deb http://another.repository/line distribution components|"
+# EXTRA_REPOSITORY_HIDDEN+="deb http://yet.another.repository/line distribution components|"
+# EXTRA_REPOSITORY_HIDDEN+="deb http://yet.more.another.repository/line distribution components|"
+
 ###
 
 # This is the list of the packages installed in the CD
