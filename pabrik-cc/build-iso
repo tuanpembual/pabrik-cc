@@ -57,7 +57,12 @@ for ARCH in $ARCHS;do
     unset CONTINUE
     echo "Debootstrap"
     /usr/bin/time $CC_DIR/debootstrap && CONTINUE=1
-    if [ -z $CONTINUE ];then break;fi
+    if [ -z $CONTINUE ];then
+        if [ -f $ROOTFS/debootstrap/debootstrap.log ];then
+            cat $ROOTFS/debootstrap/debootstrap.log
+        fi
+        break;
+    fi
     unset CONTINUE
     echo "Installing system"
     /usr/bin/time $CC_DIR/install-system && CONTINUE=1
