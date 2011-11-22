@@ -67,7 +67,7 @@ LOG_FILE=$TMP/$DISK_ID-publish/log.txt
 mkdir -p $TMP/$DISK_ID-publish
 set +e
 export TIME="Time spent: %E."
-/usr/bin/time $CC_DIR/build-iso >$LOG_FILE 2>&1
+/usr/bin/time $CC_DIR/build-iso &>$LOG_FILE
 
 if [ $? -eq 0 ];then
     echo "Success."
