@@ -136,7 +136,7 @@ record_names() {
 list_rootfs_packages() {
     cat << @@EOF > ${ROOTFS}/tmp/xdpkg-query
 #!/bin/bash
-dpkg-query -W -f='\${PackageSpec} \${Version}\n' 
+dpkg-query -W -f='\${Package} \${Version}\n' 
 @@EOF
     chmod +x $ROOTFS/tmp/xdpkg-query
     do_chroot /tmp/xdpkg-query
