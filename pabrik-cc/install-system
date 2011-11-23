@@ -21,11 +21,11 @@ cat << @@EOF > $ROOTFS/etc/apt/sources.list
 deb $MIRROR $DIST $COMPONENTS 
 @@EOF
 
-if [ -n $EXTRA_REPOSITORY ];then
+if [ -n "$EXTRA_REPOSITORY" ];then
     echo $EXTRA_REPOSITORY | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/extra.list
 fi
 
-if [ -n $EXTRA_REPOSITORY_HIDDEN ];then
+if [ -n "$EXTRA_REPOSITORY_HIDDEN" ];then
     echo $EXTRA_REPOSITORY_HIDDEN | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/hidden.list
 fi
 
