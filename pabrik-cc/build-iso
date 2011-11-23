@@ -40,6 +40,8 @@ export CDVOLUME
 export LIVE_PACKAGES
 export LIVE_SYSTEM
 export MAX_SIZE
+export EXTRA_REPOSITORY
+export EXTRA_REPOSITORY_HIDDEN 
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
