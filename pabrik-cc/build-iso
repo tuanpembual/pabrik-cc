@@ -100,6 +100,8 @@ fi
 if [ -n $PUBLISH_PATH ];then
     mkdir -p $PUBLISH_PATH/$DISK_ID
     mv $TMP/$DISK_ID-publish/* $PUBLISH_PATH/$DISK_ID
+    rm -f $PUBLISH_PATH/current
+    ln -s $PUBLISH_PATH/$DISK_ID $PUBLISH_PATH/current
 fi
 
 if [ -z $CONTINUE ];then 
