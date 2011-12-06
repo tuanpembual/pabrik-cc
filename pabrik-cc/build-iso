@@ -43,6 +43,7 @@ export MAX_SIZE
 export EXTRA_REPOSITORY
 export EXTRA_REPOSITORY_HIDDEN 
 
+
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
 
@@ -53,6 +54,7 @@ fi
 
 mkdir -p $TMP/$DISK_ID-publish
 for ARCH in $ARCHS;do
+    eval "export `eval "echo KERNEL_$ARCH"`"
     export ARCH=$ARCH
     echo "Building ISO for $ARCH $DIST"
     . $CC_DIR/functions

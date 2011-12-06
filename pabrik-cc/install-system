@@ -28,9 +28,12 @@ fi
 if [ -n "$EXTRA_REPOSITORY_HIDDEN" ];then
     echo $EXTRA_REPOSITORY_HIDDEN | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/hidden.list
 fi
-
-refresh_repository
-install_package $PACKAGES $KERNEL
+set -x
+eval "KERNEL_ARCH=`eval "echo \\\$KERNEL_$ARCH"`"
+if [ -z "$KERNEL_ARCH" ];then
+    KERNEL_ARCH=$KERNEL
+fi
+install_package $PACKAGES $KERNEL_ARCH
 
 if [ -n "$BLACKLIST" ];then
     remove_package $BLACKLIST
