@@ -1,0 +1,11 @@
+From: Pabrik CD <pabrik-cd@blankon.in>
+To: RECIPIENT
+Subject: Building of ISO DIST was a success! 
+
+Hello,
+
+The building of ISO DIST was successful. You can download it here:
+PUBLISH_URL
+
+Yours truly,
+Pabrik CD
