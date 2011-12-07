@@ -31,7 +31,7 @@ set timeout=15
 set default=0 # Set the default menu entry
  
 menuentry "Live" {
-    linux /boot/vmlinuz 
+    linux /boot/vmlinuz boot=live
     initrd /boot/initrd.img
     boot
 }
