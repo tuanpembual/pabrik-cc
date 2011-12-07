@@ -33,6 +33,7 @@ eval "KERNEL_ARCH=`eval "echo \\\$KERNEL_$ARCH"`"
 if [ -z "$KERNEL_ARCH" ];then
     KERNEL_ARCH=$KERNEL
 fi
+refresh_repository
 install_package $PACKAGES $KERNEL_ARCH
 
 if [ -n "$BLACKLIST" ];then
