@@ -48,8 +48,14 @@ if [ -n "$LIVE_PACKAGES" ];then
     install_package $LIVE_PACKAGES
 fi
 
-cp $ROOTFS/boot/initrd.img* $DISK/$LIVE_SYSTEM/initrd.img
-cp $ROOTFS/boot/vmlinuz* $DISK/$LIVE_SYSTEM/vmlinuz
+if [ -z "$ISOLINUX" ];then
+    mkdir -p $DISK/boot
+    cp $ROOTFS/boot/initrd.img* $DISK/boot/initrd.img
+    cp $ROOTFS/boot/vmlinuz* $DISK/boot/vmlinuz
+else
+    cp $ROOTFS/boot/initrd.img* $DISK/$LIVE_SYSTEM/initrd.img
+    cp $ROOTFS/boot/vmlinuz* $DISK/$LIVE_SYSTEM/vmlinuz
+fi
 
 if [ -d $ROOTFS/etc/apt/sources.list.d/hidden.list ];then
     rm -f $ROOTFS/etc/apt/sources.list.d/hidden.list

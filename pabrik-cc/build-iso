@@ -76,10 +76,12 @@ for ARCH in $ARCHS;do
     /usr/bin/time $CC_DIR/squashfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     unset CONTINUE
-    echo "Installing ISOLINUX"
-    /usr/bin/time $CC_DIR/isolinux && CONTINUE=1
-    if [ -z $CONTINUE ];then break;fi
-    unset CONTINUE
+    if [ -n "$ISOLINUX" ];then
+        echo "Installing ISOLINUX"
+        /usr/bin/time $CC_DIR/isolinux && CONTINUE=1
+        if [ -z $CONTINUE ];then break;fi
+        unset CONTINUE
+    fi
     echo "Generating image"
     /usr/bin/time $CC_DIR/genisoimage && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
