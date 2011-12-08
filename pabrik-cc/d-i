@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+check_variable D_I_URL
+
+mkdir -p $DISK/install/gtk
+wget -O $DISK/install/gtk/initrd.gz $D_I_URL/initrd.gz
+wget -O $DISK/install/gtk/vmlinuz $D_I_URL/vmlinuz
+
