@@ -43,6 +43,7 @@ export MAX_SIZE
 export EXTRA_REPOSITORY
 export EXTRA_REPOSITORY_HIDDEN 
 
+export D_I_URL
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
@@ -82,6 +83,11 @@ for ARCH in $ARCHS;do
         if [ -z $CONTINUE ];then break;fi
         unset CONTINUE
     fi
+    if [ -n "$D_I_URL" ];then
+        /usr/bin/time $CC_DIR/d-i && CONTINUE=1
+    fi
+    if [ -z $CONTINUE ];then break;fi
+    unset CONTINUE
     echo "Generating image"
     /usr/bin/time $CC_DIR/genisoimage && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi

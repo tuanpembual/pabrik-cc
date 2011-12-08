@@ -57,6 +57,9 @@ ISOLINUX=blankon-image-syslinux
 # This is the path that the isolinux theme above provides the files installed to
 ISOLINUX_PATH=/usr/share/blankon-image-syslinux/
 
+# URL where the Gtk's debian-installer vmlinuz and initrd resides
+#D_I_URL=http://ftp.debian.org/debian/dists/unstable/main/installer-amd64/current/images/cdrom/
+
 # This is used by genisoimage
 # This is the volume name
 CDVOLUME=BlankOn

@@ -37,6 +37,17 @@ menuentry "Live" {
 }
 
 @EOF
+
+    if [ -n "$D_I_URL" ];then
+    cat << @EOF >> $DISK/boot/grub/grub.cfg
+menuentry "Install" {
+    linux /install/gtk/vmlinuz  video=vesa:ywrap,mtrr vga=788 quiet
+    initrd /install/gtk/initrd.gz
+    boot
+}
+
+@EOF
+    fi
     ISOOPT="$ISOOPT -R -b boot/grub/eltorito.img"
 fi
 
