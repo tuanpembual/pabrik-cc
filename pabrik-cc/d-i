@@ -10,6 +10,8 @@ fi
 . $CC_DIR/functions
 check_variable D_I_URL
 
+D_I_URL=`echo $D_I_URL|sed -e "s/ARCH/$ARCH/g"`
+
 mkdir -p $DISK/install/gtk
 wget -O $DISK/install/gtk/initrd.gz $D_I_URL/initrd.gz
 wget -O $DISK/install/gtk/vmlinuz $D_I_URL/vmlinuz
