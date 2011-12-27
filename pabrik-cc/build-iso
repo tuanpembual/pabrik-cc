@@ -100,11 +100,17 @@ done
 if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
     if [ -z $CONTINUE ];then
         SOURCE=FAIL.txt
+        TMESSAGE="$DIST $VARIANT build failed: $PUBLISH_URL";
     else
         SOURCE=SUCCESS.txt
+        TMESSAGE="$DIST $VARIANT build successful: $PUBLISH_URL";
     fi
     echo "Sending email to $RECIPIENT"
     sed -e "s/RECIPIENT/$RECIPIENT/g" -e "s|PUBLISH_URL|$PUBLISH_URL|g" -e "s/DIST/$DIST/g" -e "s/VARIANT/$VARIANT/g" < $TEMPLATES_PATH/$SOURCE | sendmail $RECIPIENT 
+
+    if [ -x /usr/bin/ttytter ];then
+        /usr/bin/ttytter -status="$TMESSAGE"
+    fi
 fi
 
 if [ -n $PUBLISH_PATH ];then
