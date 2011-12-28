@@ -76,14 +76,15 @@ for ARCH in $ARCHS;do
     echo "Making squashfs"
     /usr/bin/time $CC_DIR/squashfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
-    unset CONTINUE
     if [ -n "$ISOLINUX" ];then
+        unset CONTINUE
         echo "Installing ISOLINUX"
         /usr/bin/time $CC_DIR/isolinux && CONTINUE=1
         if [ -z $CONTINUE ];then break;fi
         unset CONTINUE
     fi
     if [ -n "$D_I_URL" ];then
+        unset CONTINUE
         /usr/bin/time $CC_DIR/d-i && CONTINUE=1
     fi
     if [ -z $CONTINUE ];then break;fi
