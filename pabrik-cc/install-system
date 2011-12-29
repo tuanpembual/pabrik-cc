@@ -40,6 +40,9 @@ if [ -n "$BLACKLIST" ];then
     remove_package $BLACKLIST
 fi
 
+# Remove hostname so it will be configured by live-config
+rm -f $ROOTFS/etc/hostname
+
 mkdir -p $DISK/$LIVE_SYSTEM
 printf $(du -sx --block-size=1 $ROOTFS | cut -f1) > $DISK/$LIVE_SYSTEM/filesystem.size
 list_rootfs_packages_to_file $DISK/$LIVE_SYSTEM/filesystem.manifest
