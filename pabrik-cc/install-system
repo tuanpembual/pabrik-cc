@@ -57,6 +57,7 @@ LIVE_USER_DEFAULT_GROUPS="sudo audio cdrom dip floppy video plugdev netdev power
 fi
 
 if [ -n "$LIVE_PACKAGES" ];then
+    echo "$LIVE_PACKAGES" > $DISK/$LIVE_SYSTEM/packages-to-remove
     install_package $LIVE_PACKAGES
 fi
 
