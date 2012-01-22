@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ -n "$DEBUG" ];then
+    set -x
+fi
 
 export INTERNALCALL=1
 
@@ -67,7 +70,7 @@ LOG_FILE=$TMP/$DISK_ID-publish/log.txt
 mkdir -p $TMP/$DISK_ID-publish
 set +e
 export TIME="Time spent: %E."
-/usr/bin/time $CC_DIR/build-iso &>$LOG_FILE
+/usr/bin/time $CC_DIR/build-iso > $LOG_FILE 2>&1
 
 if [ $? -eq 0 ];then
     echo "Success."
