@@ -74,3 +74,5 @@ if [ -d $ROOTFS/etc/apt/sources.list.d/hidden.list ];then
     rm -f $ROOTFS/etc/apt/sources.list.d/hidden.list
     refresh_repository
 fi
+
+rm -f $ROOTFS/etc/hosts
