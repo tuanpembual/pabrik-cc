@@ -51,6 +51,11 @@ menuentry "Install" {
     ISOOPT="$ISOOPT -R -b boot/grub/eltorito.img"
 fi
 
+mkdir -p $DISK/.disk
+echo "$CDVOLUME $DIST ($DISK_ID)" > $DISK/.disk/info
+echo "full_cd/single" > $DISK/.disk/cd_type
+touch $DISK/.disk/base_installable
+
 # Generates the iso image
 pushd $TMP
 genisoimage ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
