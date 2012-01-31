@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable CDVOLUME
+
+mkdir -p $DISK/.disk
+echo "$CDVOLUME $DIST ($DISK_ID)" > $DISK/.disk/info
+echo "full_cd/single" > $DISK/.disk/cd_type
+touch $DISK/.disk/base_installable
+
+du -sb $ROOTFS | cut -f1 > $DISK/.disk/installation_size
+
+

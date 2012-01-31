@@ -88,9 +88,27 @@ for ARCH in $ARCHS;do
         /usr/bin/time $CC_DIR/d-i && CONTINUE=1
     fi
     if [ -z $CONTINUE ];then break;fi
+
+    if [ -z "$ISOLINUX" ]; then
+        unset CONTINUE
+        echo "Generating grub entries"
+        /usr/bin/time $CC_DIR/grub && CONTINUE=1
+        if [ -z $CONTINUE ];then break;fi
+    fi
+
+    unset CONTINUE
+    echo "Generating disk info"
+    /usr/bin/time $CC_DIR/disk-info && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+
     unset CONTINUE
     echo "Generating image"
     /usr/bin/time $CC_DIR/genisoimage && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+
+    unset CONTINUE
+    echo "Publishing images"
+    /usr/bin/time $CC_DIR/publish && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable ARCH
+check_variable DIST
+check_variable VARIANT
+
+if [ -n $MAX_SIZE_BYTE -a $MAX_SIZE_BYTE -gt 0 -a -f $DIST-$VARIANT-$ARCH.iso ];then
+    A=`du -b $DIST-$VARIANT-$ARCH.iso |cut -f1`
+    if [ $A -gt $MAX_SIZE_BYTE ];then
+        touch $DIST-$VARIANT-$ARCH.iso.OVERSIZED
+    fi
+fi
+
+md5sum $TMP/$DIST-$VARIANT-$ARCH.iso > $TMP/$DIST-$VARIANT-$ARCH.iso.md5sum
+mv $TMP/$DIST-$VARIANT-$ARCH.iso* $TMP/$DISK_ID-publish
