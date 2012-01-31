@@ -119,6 +119,7 @@ check_mounts_and_dismount() {
 refresh_repository() {
     cp /etc/resolv.conf $ROOTFS/etc
     do_chroot apt-get update
+    do_chroot apt-get --force-yes --yes upgrade
 }
 
 record_names() {
