@@ -9,6 +9,10 @@ fi
 
 . $CC_DIR/functions
 
+do_chroot /usr/bin/lsb_release -d -s > /tmp/distro-id
+read DISTRO_ID < /tmp/distro-id
+rm -f /tmp/distro-id
+
 mkdir -p $DISK/boot/grub
 cat << @EOF > $TMP/temp.cfg
 set prefix=/boot
@@ -20,7 +24,7 @@ configfile /boot/grub/grub.cfg
 set timeout=0
 set default=0 # Set the default menu entry
  
-menuentry "Live" {
+menuentry "$DISTRO_ID" --class gnu-linux {
     linux /boot/vmlinuz boot=live config
     initrd /boot/initrd.img
     boot
