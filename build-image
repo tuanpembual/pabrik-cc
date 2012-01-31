@@ -69,6 +69,7 @@ fi
 LOG_FILE=$TMP/$DISK_ID-publish/log.txt
 mkdir -p $TMP/$DISK_ID-publish
 set +e
+cat $CONFIG | grep -v RECIPIENT | grep -v PUBLISH > $TMP/$DISK_ID-publish/build.conf
 export TIME="Time spent: %E."
 echo "Configuration used:" > $LOG_FILE
 cat $CONFIG >> $LOG_FILE 
