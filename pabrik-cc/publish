@@ -20,5 +20,7 @@ if [ -n $MAX_SIZE_BYTE -a $MAX_SIZE_BYTE -gt 0 -a -f $DIST-$VARIANT-$ARCH.iso ];
     fi
 fi
 
-md5sum $TMP/$DIST-$VARIANT-$ARCH.iso > $TMP/$DIST-$VARIANT-$ARCH.iso.md5sum
+pushd $TMP
+md5sum $DIST-$VARIANT-$ARCH.iso > $DIST-$VARIANT-$ARCH.iso.md5sum
+popd
 mv $TMP/$DIST-$VARIANT-$ARCH.iso* $TMP/$DISK_ID-publish
