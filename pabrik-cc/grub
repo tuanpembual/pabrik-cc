@@ -25,7 +25,7 @@ set timeout=0
 set default=0 # Set the default menu entry
  
 menuentry "$DISTRO_ID" --class gnu-linux {
-    linux /boot/vmlinuz boot=live config
+    linux /boot/vmlinuz boot=live config quiet console=tty12
     initrd /boot/initrd.img
     boot
 }
