@@ -35,6 +35,7 @@ export MIRROR
 export SCRIPT
 export COMPONENTS
 export PACKAGES
+export BLACKLIST
 export KERNEL
 export SQUASHFS
 export ISOLINUX
