@@ -48,6 +48,7 @@ export EXTRA_REPOSITORY
 export EXTRA_REPOSITORY_HIDDEN 
 
 export D_I_URL
+export STRIP
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
@@ -76,6 +77,12 @@ for ARCH in $ARCHS;do
     echo "Installing system"
     /usr/bin/time $CC_DIR/install-system && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
+
+    unset CONTINUE
+    echo "Stripping"
+    /usr/bin/time $CC_DIR/strip && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+
     unset CONTINUE
     echo "Making squashfs"
     /usr/bin/time $CC_DIR/squashfs && CONTINUE=1
@@ -91,6 +98,8 @@ for ARCH in $ARCHS;do
         unset CONTINUE
         /usr/bin/time $CC_DIR/d-i && CONTINUE=1
     fi
+
+
     if [ -z $CONTINUE ];then break;fi
 
     if [ -z "$ISOLINUX" ]; then

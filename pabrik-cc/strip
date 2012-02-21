@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable ROOTFS
+check_variable DISK_ID
+
+#STRIP="/usr/share/doc /usr/share/locale/"
+if [ -n $STRIP ];then 
+    rm -f $TMP/$DISK_ID-stripped.list
+    for i in $STRIP;do
+        set +e
+        grep -h "$i" $ROOTFS/var/lib/dpkg/info/*list >> $TMP/$DISK_ID-stripped.list
+        set -e
+        for f in `find $ROOTFS/var/lib/dpkg|grep "\.list$"`;do
+            grep -v $i $f > $f.stripped
+            mv $f.stripped $f
+        done
+    done
+    echo "Removing..."
+    for i in `cat $TMP/$DISK_ID-stripped.list`;do
+        echo $i
+        rm -rf $ROOTFS/$i
+    done
+fi
