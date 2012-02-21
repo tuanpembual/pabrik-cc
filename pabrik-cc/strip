@@ -13,7 +13,7 @@ check_variable ROOTFS
 check_variable DISK_ID
 
 #STRIP="/usr/share/doc /usr/share/locale/"
-if [ -n $STRIP ];then 
+if [ -n "$STRIP" ];then 
     rm -f $TMP/$DISK_ID-stripped.list
     for i in $STRIP;do
         set +e
