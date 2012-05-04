@@ -14,7 +14,6 @@ check_variable DISK_ORIGINAL
 
 # Create the mount places
 mkdir -p $TMP/$DISK_MOUNTED
-mkdir -p $TMP/$ROOTFS_MOUNTED
 
 echo "Mounting the image $DISK_ORIGINAL to $TMP/$DISK_MOUNTED"
 mount -o loop $DISK_ORIGINAL $TMP/$DISK_MOUNTED
@@ -22,25 +21,6 @@ mount -o loop $DISK_ORIGINAL $TMP/$DISK_MOUNTED
 echo "Copying the image's content"
 cp -a $TMP/$DISK_MOUNTED $DISK
 
-if [ -d $TMP/$DISK_MOUNTED/live ];then
-    LIVE_SYSTEM=live
-elif [ -d $TMP/$DISK_MOUNTED/casper ];then
-    LIVE_SYSTEM=casper
-else
-    echo "LIVE system can't be determined"
-    exit 1
-fi
-check_variable LIVE_SYSTEM
-
-# Mount the rootfs
-mount -o loop $TMP/$DISK_MOUNTED/$LIVE_SYSTEM/filesystem.squashfs $TMP/$ROOTFS_MOUNTED
-
-# Copy the rootfs's content
-echo "Extracting image's content"
-cp -a $TMP/$ROOTFS_MOUNTED $ROOTFS
-
 # unmount and remove the mount locations
-umount $TMP/$ROOTFS_MOUNTED
 umount $TMP/$DISK_MOUNTED
 rmdir $TMP/$DISK_MOUNTED
-rmdir $TMP/$ROOTFS_MOUNTED

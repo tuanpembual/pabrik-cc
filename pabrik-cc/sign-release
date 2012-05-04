@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+while getopts ":f:p:" opt; do
+    case $opt in
+      f)
+        echo "Creating Encrypted $OPTARG" >&2
+        export FILE=$OPTARG
+        ;;
+      p)
+	echo "Placing Encrypted $FILE.gpg at $OPTARG" >&2
+	export PLACE=$OPTARG
+	;;
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+    esac
+done
+
+if [ -z "$FILE" -o -z "$PLACE" ];then
+    echo "Usage: $0 -f filename -p place"
+    exit 1
+fi
+
+. gpg-sign.conf
+
+if [ ! -f "$GNUPG_DIR/secring.gpg" ] || [ ! -f "$GNUPG_DIR/pubring.gpg" ] || \
+[ ! -f "$GNUPG_DIR/trustdb.gpg" ]; then
+echo 'No keys found; not signing images.' >&2
+exit
+fi
+
+gpg --no-default-keyring \
+--secret-keyring "$GNUPG_DIR/secring.gpg" \
+--keyring "$GNUPG_DIR/pubring.gpg" \
+--trustdb-name "$GNUPG_DIR/trustdb.gpg" \
+--default-key "$SIGNING_KEYID" --no-options --batch --no-tty \
+--armour --detach-sign < $FILE > "$PLACE/"$(basename $FILE)".gpg" 
