@@ -1,0 +1,125 @@
+#!/bin/bash
+if [ -n "$DEBUG" ];then
+    set -x
+fi
+
+set -e
+export INTERNALCALL=1
+
+if [ -d /usr/share/pabrik-cc ]; then
+    export CC_DIR=/usr/share/pabrik-cc
+elif [ -d `pwd`/pabrik-cc ];then
+    export CC_DIR=./pabrik-cc
+fi
+
+if [ -z $CC_DIR ];then
+    echo "Broken setup, CC_DIR is not found"
+    exit 1
+fi
+
+while getopts ":d:r:p:t:" opt; do
+    case $opt in
+      d)
+        echo "Using Source Directory $OPTARG" >&2
+        export CURRENT_DIR=$OPTARG
+        ;;
+      r)
+        echo "Using Release Tag $OPTARG" >&2
+        export RELEASE_TAG=$OPTARG
+        ;;
+      p)
+        echo "Using Publish Directory $OPTARG" >&2
+        export PUBLISH=$OPTARG
+        ;;
+      t)
+        echo "Using Temporary Directory $OPTARG" >&2
+        export TMP=$OPTARG
+        ;;
+
+      \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+      :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+    esac
+done
+
+. gpg-sign.conf
+
+if [ -z "$TMP" ]; then
+    export TMP=/tmp/release-image
+    echo "Using Temporary Directory $TMP" >&1
+fi
+
+if [ -z "$CURRENT_DIR" -o -z "$RELEASE_TAG" -o -z "$PUBLISH"  ];then
+    echo "Usage: $0 -d DAILY_BUILD_DIR -r RELEASE_TAG -p PUBLISH_DIR"
+    exit 1
+fi
+
+if [ ! -d "$CURRENT_DIR" ]; then
+    echo "CURRENT DIR not found"
+    exit 1
+fi
+
+if [ -f $CURRENT_DIR/build.conf ];then
+    source $CURRENT_DIR/build.conf
+else
+    echo "build.conf does not exist. Can't continue"
+    exit 1
+fi
+
+DISTRO=$DIST
+export DISK_ID=`basename $CURRENT_DIR`
+mkdir -p $PUBLISH
+
+for ARCH in $ARCHS
+do
+    export CDVOLUME=$CDVOLUME
+    export ARCH=$ARCH
+    export ISO_ORIGINAL="$DIST-$VARIANT-$ARCH.iso"
+    export DISK_ORIGINAL="$CURRENT_DIR/$ISO_ORIGINAL"
+    export DISK_MOUNTED=$DISK_ID-mounted
+    export DISK_BUILD=$DISK_ID-disk-$ARCH
+    export DISK=$TMP/$DISK_BUILD
+    export DIST=$DIST
+    export MAX_SIZE=$MAX_SIZE
+    export VARIANT=$VARIANT
+    echo "Processing ARCH $ARCH"
+
+    $CC_DIR/copy-image
+
+    export DIST="$DIST $RELEASE_TAG"
+    $CC_DIR/disk-info
+
+    export DIST=$DISTRO
+    $CC_DIR/genisoimage
+
+    export ISO_NEW="BlankOn-$RELEASE_TAG-$VARIANT-$ARCH.iso"
+    mv $TMP/$ISO_ORIGINAL $PUBLISH/$ISO_NEW
+
+    OLD_LIST="$DIST-$VARIANT-$ARCH.list"
+    NEW_LIST="BlankOn-$RELEASE_TAG-$VARIANT-$ARCH.list"
+
+    cp $CURRENT_DIR/$OLD_LIST $PUBLISH/$NEW_LIST
+
+    pushd $PUBLISH
+        md5sum $ISO_NEW > $ISO_NEW.md5sum
+        sha1sum $ISO_NEW > $ISO_NEW.sha1sum
+        sha256sum $ISO_NEW > $ISO_NEW.sha256sum
+    popd
+
+    $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.md5" -p "$PUBLISH"
+    $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.sha1" -p "$PUBLISH"
+    $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.sha256" -p "$PUBLISH"
+
+    rm -rf $DISK
+
+    echo "ARCH $ARCH's ISO done"
+done
+
+cp $CURRENT_DIR/build.conf $PUBLISH/
+rm -rf $TMP
+
