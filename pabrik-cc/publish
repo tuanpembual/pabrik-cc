@@ -24,5 +24,6 @@ pushd $TMP
 md5sum $DIST-$VARIANT-$ARCH.iso > $DIST-$VARIANT-$ARCH.iso.md5sum
 sha1sum $DIST-$VARIANT-$ARCH.iso > $DIST-$VARIANT-$ARCH.iso.sha1sum
 sha256sum $DIST-$VARIANT-$ARCH.iso > $DIST-$VARIANT-$ARCH.iso.sha256sum
+zsyncmake $DIST-$VARIANT-$ARCH.iso
 popd
 mv $TMP/$DIST-$VARIANT-$ARCH.iso* $TMP/$DISK_ID-publish

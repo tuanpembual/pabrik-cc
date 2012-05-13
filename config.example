@@ -54,12 +54,16 @@ SQUASHFS="squashfs-tools"
 # ISOLINUX
 # This is the isolinux theme package name
 ISOLINUX=blankon-image-syslinux
+
 # This is the path that the isolinux theme above provides the files installed to
 ISOLINUX_PATH=/usr/share/blankon-image-syslinux/
 
 # STRIP files from the image, the files will be removed from filesystem as well as from the package
 # manifest database.
-#STRIP="/usr/share/doc /usr/share/locale"
+STRIP="/usr/share/doc /usr/share/locale"
+
+# STRIP_EXCLUSIONS contains list of package which MUST not be STRIP-ped above
+STRIP_EXCLUSIONS="blankon-language-pack-id rote-language-pack-id"
 
 # URL where the Gtk's debian-installer vmlinuz and initrd resides
 #D_I_URL=http://ftp.debian.org/debian/dists/unstable/main/installer-amd64/current/images/cdrom/

@@ -18,15 +18,19 @@ if [ -n "$STRIP" ];then
     for i in $STRIP;do
         set +e
         grep -h "$i" $ROOTFS/var/lib/dpkg/info/*list >> $TMP/$DISK_ID-stripped.list
-        set -e
         for f in `find $ROOTFS/var/lib/dpkg|grep "\.list$"`;do
             grep -v $i $f > $f.stripped
             mv $f.stripped $f
         done
+        set -e
     done
     echo "Removing..."
     for i in `cat $TMP/$DISK_ID-stripped.list`;do
         echo $i
         rm -rf $ROOTFS/$i
     done
+fi
+
+if [ -n "$STRIP_EXCLUSIONS" ];then
+    install_package "--reinstall $STRIP_EXCLUSIONS"
 fi

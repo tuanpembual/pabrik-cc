@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+TRACKER=http://cdimage.blankonlinux.or.id:6969/announce
+
+if [ -z "$1" ]; then
+	echo 'Usage: make-torrent DIR FILE' >&2
+fi
+
+TDIR=$1
+TFILE=$2
+
+echo $TDIR
+echo $TFILE
+
+btmakemetafile $TRACKER $TDIR/$TFILE --comment "$TFILE"

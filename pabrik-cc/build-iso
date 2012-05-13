@@ -49,6 +49,7 @@ export EXTRA_REPOSITORY_HIDDEN
 
 export D_I_URL
 export STRIP
+export STRIP_EXCLUSIONS
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
