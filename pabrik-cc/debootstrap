@@ -16,7 +16,7 @@ check_variable DISK_ID
 check_variable SCRIPT
 
 echo "Debootstrap to $DIST"
-/usr/sbin/debootstrap --foreign $DIST $ROOTFS $MIRROR $SCRIPT
+/usr/sbin/debootstrap --arch $ARCH --foreign $DIST $ROOTFS $MIRROR $SCRIPT
 echo "Going second stage of debootstrap"
 mv $ROOTFS/usr/sbin/invoke-rc.d $ROOTFS/usr/sbin/invoke-rc.d.real
 cp $ROOTFS/bin/true $ROOTFS/usr/sbin/invoke-rc.d
