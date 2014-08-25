@@ -39,7 +39,7 @@ mount -o loop $TMP/$DISK_MOUNTED/$LIVE_SYSTEM/filesystem.squashfs $TMP/$ROOTFS_M
 echo "Extracting image's content"
 cp -a $TMP/$ROOTFS_MOUNTED $ROOTFS
 
-# unmount and remove the moount locations
+# unmount and remove the mount locations
 umount $TMP/$ROOTFS_MOUNTED
 umount $TMP/$DISK_MOUNTED
 rmdir $TMP/$DISK_MOUNTED

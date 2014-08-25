@@ -53,9 +53,9 @@ list_rootfs_packages_to_file $DISK/$LIVE_SYSTEM/filesystem.manifest
 
 if [ $LIVE_SYSTEM = "live" ];then
     cat << @EOF > $DISK/$LIVE_SYSTEM/config.conf 
-LIVE_HOSTNAME="edusantara"
-LIVE_USERNAME="edusantara"
-LIVE_USER_FULLNAME="Edusantara"
+LIVE_HOSTNAME="blankon"
+LIVE_USERNAME="blankon"
+LIVE_USER_FULLNAME="BlankOn"
 LIVE_USER_DEFAULT_GROUPS="sudo audio cdrom dip floppy video plugdev netdev powerdev scanner bluetooth debian-tor"
 @EOF
 fi

@@ -18,16 +18,15 @@ if [ -n "$STRIP" ];then
     for i in $STRIP;do
         set +e
         grep -h "$i" $ROOTFS/var/lib/dpkg/info/*list >> $TMP/$DISK_ID-stripped.list
-        for f in `find $ROOTFS/var/lib/dpkg|grep "\.list$"`;do
-            grep -v $i $f > $f.stripped
-            mv $f.stripped $f
-        done
         set -e
     done
-    echo "Removing..."
+    echo "Truncating..."
     for i in `cat $TMP/$DISK_ID-stripped.list`;do
-        echo $i
-        rm -rf $ROOTFS/$i
+        if [ -f $ROOTFS/$i ];then
+            echo $i
+            rm -rf $ROOTFS/$i
+            touch $ROOTFS/$i
+        fi
     done
 fi
 

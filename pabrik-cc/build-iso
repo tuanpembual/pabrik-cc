@@ -35,6 +35,7 @@ export MIRROR
 export SCRIPT
 export COMPONENTS
 export PACKAGES
+export PACKAGES_DICT
 export BLACKLIST
 export KERNEL
 export SQUASHFS
@@ -45,11 +46,11 @@ export LIVE_PACKAGES
 export LIVE_SYSTEM
 export MAX_SIZE
 export EXTRA_REPOSITORY
+export EXTRA_REPOSITORY_UPDATES
 export EXTRA_REPOSITORY_HIDDEN 
 
 export D_I_URL
 export STRIP
-export STRIP_EXCLUSIONS
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
@@ -82,6 +83,11 @@ for ARCH in $ARCHS;do
     unset CONTINUE
     echo "Stripping"
     /usr/bin/time $CC_DIR/strip && CONTINUE=1
+    if [ -z $CONTINUE ];then break;fi
+
+    unset CONTINUE
+    echo "Cleaning rootfs"
+    /usr/bin/time $CC_DIR/clean-rootfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
@@ -141,6 +147,7 @@ if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
     echo "Sending email to $RECIPIENT"
     sed -e "s/RECIPIENT/$RECIPIENT/g" -e "s|PUBLISH_URL|$PUBLISH_URL|g" -e "s/DIST/$DIST/g" -e "s/VARIANT/$VARIANT/g" < $TEMPLATES_PATH/$SOURCE | sendmail $RECIPIENT 
 
+# sokam - 2014 01 17
     if [ -x /usr/bin/ttytter ];then
         /usr/bin/ttytter -status="$TMESSAGE"
     fi
@@ -150,7 +157,9 @@ if [ -n $PUBLISH_PATH ];then
     mkdir -p $PUBLISH_PATH/$DISK_ID
     mv $TMP/$DISK_ID-publish/* $PUBLISH_PATH/$DISK_ID
     rm -f $PUBLISH_PATH/current
-    ln -s $PUBLISH_PATH/$DISK_ID $PUBLISH_PATH/current
+    cd $PUBLISH_PATH/
+    ln -s $DISK_ID current
+    cd -
 fi
 
 if [ -z $CONTINUE ];then 

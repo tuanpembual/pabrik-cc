@@ -50,7 +50,7 @@ done
 . gpg-sign.conf
 
 if [ -z "$TMP" ]; then
-    export TMP=/tmp/release-image
+    export TMP=/home/cdimage/pabrik-cc/tmp/release-image
     echo "Using Temporary Directory $TMP" >&1
 fi
 
@@ -106,16 +106,17 @@ do
     cp $CURRENT_DIR/$OLD_LIST $PUBLISH/$NEW_LIST
 
     pushd $PUBLISH
-        md5sum $ISO_NEW > $ISO_NEW.md5sum
-        sha1sum $ISO_NEW > $ISO_NEW.sha1sum
-        sha256sum $ISO_NEW > $ISO_NEW.sha256sum
-        zsyncmake $ISO_NEW
+        md5sum $ISO_NEW > $ISO_NEW.md5
+        sha1sum $ISO_NEW > $ISO_NEW.sha1
+        sha256sum $ISO_NEW > $ISO_NEW.sha256
+        zsyncmake $ISO_NEW 
     popd
 
     $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.md5" -p "$PUBLISH"
     $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.sha1" -p "$PUBLISH"
     $CC_DIR/sign-release -f "$PUBLISH/$ISO_NEW.sha256" -p "$PUBLISH"
-    $CC_DIR/make-torrent $PUBLISH $ISO_NEW
+    
+#    $CC_DIR/make-torrent $PUBLISH $ISO_NEW
 
     rm -rf $DISK
 
@@ -125,3 +126,6 @@ done
 cp $CURRENT_DIR/build.conf $PUBLISH/
 rm -rf $TMP
 
+pushd $PUBLISH
+    btlaunchmanycurses . &
+popd

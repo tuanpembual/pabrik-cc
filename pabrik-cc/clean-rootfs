@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable ROOTFS
+check_variable DISK_ID
+
+rm -f $ROOTFS/var/cache/apt/*.bin
+
