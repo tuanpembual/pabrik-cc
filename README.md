@@ -6,28 +6,28 @@
 ## Setup GNUPG
 
 ## Menghajar Pabrik
-* Buat User CDIMAGE
+* Buat User CDIMAGE  
 `$ sudo adduser cdimage`
 
-* Ubah CDIMAGE menjadi sudoers
-`$ sudo visudo -f /etc/sudoers`
-Tambahkan di baris terakhir dan simpan
+* Ubah CDIMAGE menjadi sudoers  
+`$ sudo visudo -f /etc/sudoers`  
+Tambahkan di baris terakhir dan simpan  
 `cdimage ALL=NOPASSWD: ALL`
 
-* Masuk Ke CDIMAGE
+* Masuk Ke CDIMAGE  
 `$ sudo su – cdimage`
 
-* Menarik Skrip Pabrik CD
+* Menarik Skrip Pabrik CD  
 `$ git clone github.com/tuanpembual/pabrik-cc.git`
 
-* Ubah suai config pabrik
+* Ubah suai config pabrik  
 `$ vim uluwatu.config`
 
-* Mengatur debootstrap uluwatu
+* Mengatur debootstrap uluwatu  
 `$ vim uluwatu.debootstrap`  
 `$ sudo cp uluwatu.debootstrap /usr/share/debootstrap/scripts/uluwatu`
 
 ## Membuat Cetakan CD
 `$ ./enter-cd-edusantara.sh`
 
-## Selamat Menikmati error Dan Baca Log
+## Selamat Menikmati Error dan Baca Log
