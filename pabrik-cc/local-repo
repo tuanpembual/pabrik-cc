@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable DIST
+check_variable LOCAL_REPO_SOURCE_PATH 
+
+mkdir -p $ROOTFS/$LOCAL_REPO_PATH/conf
+
+cat << @@EOF > $ROOTFS/$LOCAL_REPO_PATH/conf/distributions
+Origin: BlankOn
+Codename: $DIST 
+Description: $DIST 
+Architectures: $ARCH 
+Components: main 
+Contents: .gz
+@@EOF
+
+LOCAL_REPO_SOURCE_PACKAGES=""
+pushd $LOCAL_REPO_SOURCE_PATH
+for i in `ls -1 *.deb`;do
+    LOCAL_REPO_SOURCE_PACKAGES+=" $i"
+done
+popd
+
+set +e
+pushd $ROOTFS/$LOCAL_REPO_PATH
+for i in $LOCAL_REPO_SOURCE_PACKAGES;do
+    reprepro includedeb $DIST $LOCAL_REPO_SOURCE_PATH/$i
+done
+popd
+set -e
+
+mkdir -p $ROOTFS/etc/apt/sources.list.d
+cat << @@EOF > $ROOTFS/etc/apt/sources.list.d/local.list
+deb file:///$LOCAL_REPO_PATH $DIST main
+@@EOF
+
+refresh_repository
+
+mv $ROOTFS/$LOCAL_REPO_PATH $TMP/$DISK_BUILD 

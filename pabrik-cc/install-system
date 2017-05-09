@@ -14,7 +14,6 @@ check_variable MIRROR
 check_variable DISK_ID
 check_variable COMPONENTS
 check_variable PACKAGES
-check_variable PACKAGES_DICT
 check_variable KERNEL 
 check_variable LIVE_SYSTEM 
 
@@ -29,16 +28,13 @@ fi
 if [ -n "$EXTRA_REPOSITORY_HIDDEN" ];then
     echo $EXTRA_REPOSITORY_HIDDEN | sed -e 's/|/\n/g'> $ROOTFS/etc/apt/sources.list.d/hidden.list
 fi
-
 set -x
 eval "KERNEL_ARCH=`eval "echo \\\$KERNEL_$ARCH"`"
 if [ -z "$KERNEL_ARCH" ];then
     KERNEL_ARCH=$KERNEL
 fi
 refresh_repository
-install_package $PACKAGES_DICT $KERNEL_ARCH &&
-install_package $PACKAGES
-
+install_package $PACKAGES $KERNEL_ARCH
 
 if [ -n "$BLACKLIST" ];then
     remove_package $BLACKLIST
@@ -53,9 +49,9 @@ list_rootfs_packages_to_file $DISK/$LIVE_SYSTEM/filesystem.manifest
 
 if [ $LIVE_SYSTEM = "live" ];then
     cat << @EOF > $DISK/$LIVE_SYSTEM/config.conf 
-LIVE_HOSTNAME="edusantara"
-LIVE_USERNAME="edusantara"
-LIVE_USER_FULLNAME="Edusantara"
+LIVE_HOSTNAME="blankon"
+LIVE_USERNAME="blankon"
+LIVE_USER_FULLNAME="BlankOn"
 LIVE_USER_DEFAULT_GROUPS="sudo audio cdrom dip floppy video plugdev netdev powerdev scanner bluetooth debian-tor"
 @EOF
 fi

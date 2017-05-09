@@ -35,7 +35,6 @@ export MIRROR
 export SCRIPT
 export COMPONENTS
 export PACKAGES
-export PACKAGES_DICT
 export BLACKLIST
 export KERNEL
 export SQUASHFS
@@ -46,11 +45,12 @@ export LIVE_PACKAGES
 export LIVE_SYSTEM
 export MAX_SIZE
 export EXTRA_REPOSITORY
-export EXTRA_REPOSITORY_UPDATES
 export EXTRA_REPOSITORY_HIDDEN 
+export LOCAL_REPO_SOURCE_PATH
 
 export D_I_URL
 export STRIP
+export NO_CHECK_GPG
 
 check_variable DISK_ID 
 check_variable TEMPLATES_PATH
@@ -68,7 +68,7 @@ for ARCH in $ARCHS;do
     . $CC_DIR/functions
     unset CONTINUE
     echo "Debootstrap"
-    /usr/bin/time $CC_DIR/debootstrap && CONTINUE=1
+    time $CC_DIR/debootstrap && CONTINUE=1
     if [ -z $CONTINUE ];then
         if [ -f $ROOTFS/debootstrap/debootstrap.log ];then
             cat $ROOTFS/debootstrap/debootstrap.log
@@ -77,33 +77,40 @@ for ARCH in $ARCHS;do
     fi
     unset CONTINUE
     echo "Installing system"
-    /usr/bin/time $CC_DIR/install-system && CONTINUE=1
+    time $CC_DIR/install-system && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
     echo "Stripping"
-    /usr/bin/time $CC_DIR/strip && CONTINUE=1
+    time $CC_DIR/strip && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
+
+    if [ -n $LOCAL_REPO_SOURCE_PATH ];then
+        unset CONTINUE
+        echo "Building local repo"
+        time $CC_DIR/local-repo && CONTINUE=1
+        if [ -z $CONTINUE ];then break;fi
+    fi
 
     unset CONTINUE
     echo "Cleaning rootfs"
-    /usr/bin/time $CC_DIR/clean-rootfs && CONTINUE=1
+    time $CC_DIR/clean-rootfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
     echo "Making squashfs"
-    /usr/bin/time $CC_DIR/squashfs && CONTINUE=1
+    time $CC_DIR/squashfs && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
     if [ -n "$ISOLINUX" ];then
         unset CONTINUE
         echo "Installing ISOLINUX"
-        /usr/bin/time $CC_DIR/isolinux && CONTINUE=1
+        time $CC_DIR/isolinux && CONTINUE=1
         if [ -z $CONTINUE ];then break;fi
         unset CONTINUE
     fi
     if [ -n "$D_I_URL" ];then
         unset CONTINUE
-        /usr/bin/time $CC_DIR/d-i && CONTINUE=1
+        time $CC_DIR/d-i && CONTINUE=1
     fi
 
 
@@ -112,23 +119,23 @@ for ARCH in $ARCHS;do
     if [ -z "$ISOLINUX" ]; then
         unset CONTINUE
         echo "Generating grub entries"
-        /usr/bin/time $CC_DIR/grub && CONTINUE=1
+        time $CC_DIR/grub && CONTINUE=1
         if [ -z $CONTINUE ];then break;fi
     fi
 
     unset CONTINUE
     echo "Generating disk info"
-    /usr/bin/time $CC_DIR/disk-info && CONTINUE=1
+    time $CC_DIR/disk-info && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
     echo "Generating image"
-    /usr/bin/time $CC_DIR/genisoimage && CONTINUE=1
+    time $CC_DIR/xorriso && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
     echo "Publishing images"
-    /usr/bin/time $CC_DIR/publish && CONTINUE=1
+    time $CC_DIR/publish && CONTINUE=1
     if [ -z $CONTINUE ];then break;fi
 
     unset CONTINUE
@@ -147,7 +154,6 @@ if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
     echo "Sending email to $RECIPIENT"
     sed -e "s/RECIPIENT/$RECIPIENT/g" -e "s|PUBLISH_URL|$PUBLISH_URL|g" -e "s/DIST/$DIST/g" -e "s/VARIANT/$VARIANT/g" < $TEMPLATES_PATH/$SOURCE | sendmail $RECIPIENT 
 
-# sokam - 2014 01 17
     if [ -x /usr/bin/ttytter ];then
         /usr/bin/ttytter -status="$TMESSAGE"
     fi

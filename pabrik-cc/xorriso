@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+if [ -z $INTERNALCALL ];then
+    echo "This script should not be called by you. Thanks for calling."
+    exit 1
+fi
+
+. $CC_DIR/functions
+
+check_variable CDVOLUME
+check_variable ARCH
+check_variable DIST
+check_variable VARIANT
+
+## Create efiboot.img
+if [ $ARCH = "i386" ];then
+    BOOTNAME="bootia32.efi"
+elif [ $ARCH = "amd64" ];then
+    BOOTNAME="bootx64.efi"
+fi
+
+dd if=/dev/zero of=$TMP/$DISK_BUILD/boot/grub/efiboot.img bs=1K count=1440
+mkdosfs -F 12 $TMP/$DISK_BUILD/boot/grub/efiboot.img
+MOUNTPOINT=$(mktemp -d)
+mount -o loop $TMP/$DISK_BUILD/boot/grub/efiboot.img $MOUNTPOINT
+mkdir -p $MOUNTPOINT/EFI/BOOT
+cp -L $CC_DIR/blobs/efi-$ARCH $MOUNTPOINT/EFI/BOOT/$BOOTNAME
+umount $MOUNTPOINT
+rmdir $MOUNTPOINT
+
+pushd $CC_DIR
+BLOBS=`pwd`/blobs
+popd
+# Generates the iso image
+pushd $TMP
+xorriso -as mkisofs --grub2-boot-info --grub2-mbr $BLOBS/hybrid.img -o $DIST-$VARIANT-$ARCH.iso -b boot/grub/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efiboot.img -no-emul-boot -isohybrid-gpt-basdat $DISK_BUILD 
+popd
+
+

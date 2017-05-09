@@ -16,9 +16,15 @@ check_variable DISK_ID
 check_variable SCRIPT
 
 echo "Debootstrap to $DIST"
-/usr/sbin/debootstrap --arch $ARCH --foreign $DIST $ROOTFS $MIRROR $SCRIPT
-echo "Going second stage of debootstrap"
-mv $ROOTFS/usr/sbin/invoke-rc.d $ROOTFS/usr/sbin/invoke-rc.d.real
-cp $ROOTFS/bin/true $ROOTFS/usr/sbin/invoke-rc.d
-do_chroot /debootstrap/debootstrap --second-stage
-mv $ROOTFS/usr/sbin/invoke-rc.d.real $ROOTFS/usr/sbin/invoke-rc.d
+if [ "x$NO_CHECK_GPG" != "x" ];then
+    echo "Not checking GPG"
+    NO_CHECK_GPG="--no-check-gpg"
+fi
+/usr/sbin/debootstrap --arch $ARCH $NO_CHECK_GPG $DIST $ROOTFS $MIRROR $SCRIPT
+
+# Inject DIST_ID into lsb-release
+R=`grep DISTRIB_RELEASE $ROOTFS/etc/lsb-release`; Y="-$DISK_ID"
+cat $ROOTFS/etc/lsb-release | sed -e "s/$R/$R$Y/g" > $ROOTFS/etc/lsb-release.tmp 
+mv $ROOTFS/etc/lsb-release.tmp $ROOTFS/etc/lsb-release
+
+

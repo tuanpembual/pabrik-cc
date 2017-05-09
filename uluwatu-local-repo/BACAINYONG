@@ -1,0 +1,33 @@
+http://tempel.blankon.in/918837
+
+1. Buat direktori tambora-local-repo di dalam direktori pabrik-cc
+2. Ambil paket2 grub dan dependensinya dan masukkan ke tambora-local-repo
+3. Pasang di conf:
+
+LOCAL_REPO_SOURCE_PATH=`pwd`/$DIST-local-repo
+
+
+Ini berkas2 yang diperlukan, versi dalam 1 paket harus sama:
+$ ls -1 tambora-local-repo/
+
+efibootmgr_0.11.0-3_amd64.deb
+efibootmgr_0.11.0-3_i386.deb
+grub2-common_2.02~beta2-23_amd64.deb
+grub2-common_2.02~beta2-23_i386.deb
+grub-common_2.02~beta2-23_amd64.deb
+grub-common_2.02~beta2-23_i386.deb
+grub-efi_2.02~beta2-23_amd64.deb
+grub-efi_2.02~beta2-23_i386.deb
+grub-efi-amd64_2.02~beta2-23_amd64.deb
+grub-efi-amd64-bin_2.02~beta2-23_amd64.deb
+grub-efi-ia32_2.02~beta2-23_i386.deb
+grub-efi-ia32-bin_2.02~beta2-23_i386.deb
+grub-pc-bin_2.02~beta2-23_amd64.deb
+grub-pc-bin_2.02~beta2-23_i386.deb
+libefivar0_0.18-1_amd64.deb
+libefivar0_0.18-1_i386.deb
+libpci3_3.2.1-3_amd64.deb
+libpci3_3.2.1-3_i386.deb
+ucf_3.0030_all.deb
+
+

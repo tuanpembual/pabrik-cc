@@ -31,3 +31,6 @@ Tambahkan di baris terakhir dan simpan
 `$ ./enter-cd-edusantara.sh`
 
 ## Selamat Menikmati Error dan Baca Log
+
+## Rilis
+sudo ./release-image -d /home/cdimage/images/livecd-harian/20120425/ -r 11.0 -p /home/cdimage/images/rilis/uluwatu/Jahitan-5/

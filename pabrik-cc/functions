@@ -34,24 +34,16 @@ unmute_debconf() {
 setup_diversion() {
     for file in $DIVERTS; do
         mkdir -p ${ROOTFS}/${file%/*}
-        do_chroot dpkg-divert --add --local --divert /${file}.livecd --rename /${file}
+        do_chroot mv /${file} /${file}.livecd
         cp ${ROOTFS}/bin/true ${ROOTFS}/$file
     done
-    cat << @@EOF > ${ROOTFS}/usr/sbin/mkinitrd
-#!/usr/bin/python
-import sys
-for i in range(len(sys.argv)):
-    if sys.argv[i]=='-o':
-        open(sys.argv[i+1],"w")
-@@EOF
-    chmod 755 ${ROOTFS}/usr/sbin/mkinitrd
 }
 
 teardown_diversion() {
     for file in $DIVERTS; do
         ls -ld ${ROOTFS}/${file} ${ROOTFS}/${file}.livecd || true
         rm -f ${ROOTFS}/${file}
-        do_chroot dpkg-divert --remove --rename /${file}
+        do_chroot mv /${file}.livecd /${file}
     done
 }
 
@@ -63,10 +55,9 @@ mount -t sysfs sys /sys
 mount -t devpts devpts-live /dev/pts
 @@EOF
     cat << @@EOF > ${ROOTFS}/tmp/umount
-umount /proc
-umount /sys
 umount /dev/pts
-mount
+umount /sys
+umount /proc
 @@EOF
     chmod +x ${ROOTFS}/tmp/mount ${ROOTFS}/tmp/umount
     do_chroot /tmp/mount
@@ -90,6 +81,11 @@ install_package() {
     unmute_debconf
     teardown_mounts
     teardown_diversion
+}
+
+install_package_unclean() {
+    echo "Installing $@"
+    do_chroot apt-get install --force-yes --yes $@
 }
 
 install_package_no_recommends() {

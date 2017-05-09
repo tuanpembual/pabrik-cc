@@ -1,4 +1,5 @@
 #!/bin/bash
+# Replaced with xorriso
 
 set -e
 

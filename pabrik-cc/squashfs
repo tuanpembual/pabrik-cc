@@ -19,5 +19,7 @@ if [ -n $SQUASHFS ];then
 fi
 
 # Creates a squashfs image and copy it to live 
-do_chroot mksquashfs / filesystem.squashfs -b 1048576 -processors $NUMPROC -no-progress -e /filesystem.squashfs /unmounted
+mount -o bind /proc $ROOTFS/proc
+do_chroot mksquashfs / filesystem.squashfs -b 1048576 -processors $NUMPROC -no-progress -e /filesystem.squashfs /proc
+umount $ROOTFS/proc
 cp $ROOTFS/filesystem.squashfs $DISK/$LIVE_SYSTEM/
