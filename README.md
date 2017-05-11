@@ -28,7 +28,7 @@ Tambahkan di baris terakhir dan simpan
 `$ sudo cp uluwatu.debootstrap /usr/share/debootstrap/scripts/uluwatu`
 
 ## Membuat Cetakan CD
-`$ ./enter-cd-edusantara.sh`
+`$ ./enter-cd-blankon.sh`
 
 ## Selamat Menikmati Error dan Baca Log
 
