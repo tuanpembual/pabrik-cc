@@ -18,7 +18,8 @@ Tambahkan di baris terakhir dan simpan
 `$ sudo su – cdimage`
 
 * Menarik Skrip Pabrik CD  
-`$ git clone github.com/tuanpembual/pabrik-cc.git`
+`$ git clone github.com/tuanpembual/pabrik-cc.git`  
+`$ git checkout uluwatu`  
 
 * Ubah suai config pabrik  
 `$ vim uluwatu.config`
