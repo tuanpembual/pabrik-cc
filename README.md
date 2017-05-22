@@ -1,7 +1,7 @@
 # PABRIK CD
 
 ## Install perkakas
-`$ sudo apt-get install git debootstrap genisoimage zsync`
+`$ sudo apt-get install git debootstrap genisoimage zsync reprepro xorriso`
 
 ## Setup GNUPG
 
@@ -27,10 +27,18 @@ Tambahkan di baris terakhir dan simpan
 `$ vim uluwatu.debootstrap`  
 `$ sudo cp uluwatu.debootstrap /usr/share/debootstrap/scripts/uluwatu`
 
+* Mengatur lokasi cd image  
+`$ mkdir /home/cdimage/images/livedvd-harian/`
+
 ## Membuat Cetakan CD
 `$ ./enter-cd-blankon.sh`
 
 ## Selamat Menikmati Error dan Baca Log
+
+## Keluar dari Chroot
+`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/sys`  
+`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/proc`  
+`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/dev/pts`
 
 ## Rilis
 `$ sudo ./release-image -d /home/cdimage/images/livecd-harian/$DATE/ -r 11.0 -p /home/cdimage/images/rilis/uluwatu/Jahitan-XX/`

@@ -26,7 +26,7 @@ Contents: .gz
 
 LOCAL_REPO_SOURCE_PACKAGES=""
 pushd $LOCAL_REPO_SOURCE_PATH
-for i in `ls -1 *.deb`;do
+for i in `ls -1 *amd64.deb`;do
     LOCAL_REPO_SOURCE_PACKAGES+=" $i"
 done
 popd

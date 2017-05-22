@@ -23,8 +23,8 @@ fi
 /usr/sbin/debootstrap --arch $ARCH $NO_CHECK_GPG $DIST $ROOTFS $MIRROR $SCRIPT
 
 # Inject DIST_ID into lsb-release
-R=`grep DISTRIB_RELEASE $ROOTFS/etc/lsb-release`; Y="-$DISK_ID"
-cat $ROOTFS/etc/lsb-release | sed -e "s/$R/$R$Y/g" > $ROOTFS/etc/lsb-release.tmp 
+R=`grep DISTRIB_RELEASE /etc/lsb-release`; Y="-$DISK_ID"
+cat /etc/lsb-release | sed -e "s/$R/$R$Y/g" > $ROOTFS/etc/lsb-release.tmp 
 mv $ROOTFS/etc/lsb-release.tmp $ROOTFS/etc/lsb-release
 
 
