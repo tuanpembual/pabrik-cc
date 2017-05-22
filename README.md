@@ -1,7 +1,7 @@
 # PABRIK CD
 
 ## Install perkakas
-`$ sudo apt-get install git debootstrap genisoimage zsync reprepro xorriso`
+`$ sudo apt-get install git debootstrap genisoimage zsync reprepro xorriso postfix`
 
 ## Setup GNUPG
 
