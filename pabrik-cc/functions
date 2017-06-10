@@ -49,6 +49,7 @@ teardown_diversion() {
 
 setup_mounts() {
     cat << @@EOF > ${ROOTFS}/tmp/mount
+mkdir -p /dev/pts
 mount
 mount -t proc proc /proc
 mount -t sysfs sys /sys
