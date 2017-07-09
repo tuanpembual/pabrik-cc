@@ -27,6 +27,7 @@ Tambahkan di baris terakhir dan simpan
 * Mengatur debootstrap uluwatu  
 `$ vim uluwatu.debootstrap`  
 `$ sudo cp uluwatu.debootstrap /usr/share/debootstrap/scripts/uluwatu`
+`$ sudo cp lsb-release /etc/.`
 
 * Mengatur lokasi cd image  
 `$ mkdir /home/cdimage/images/livedvd-harian/`
@@ -37,9 +38,12 @@ Tambahkan di baris terakhir dan simpan
 ## Selamat Menikmati Error dan Baca Log
 
 ## Keluar dari Chroot
-`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/sys`  
-`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/proc`  
-`$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/dev/pts`
+```
+$ sudo mount  
+$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/$DATE-rootfs-amd64/sys  
+$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/proc  
+$ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/dev/pts
+```
 
 ## Rilis
 `$ sudo ./release-image -d /home/cdimage/images/livecd-harian/$DATE/ -r 11.0 -p /home/cdimage/images/rilis/uluwatu/Jahitan-XX/`
