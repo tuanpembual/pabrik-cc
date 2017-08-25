@@ -7,8 +7,5 @@ Hello,
 The building of ISO DIST was successful. You can download it here:
 PUBLISH_URL
 
-Today is better than yesterday:
-http://untung.blankon.in/
-
 Yours truly,
 Pabrik CD
