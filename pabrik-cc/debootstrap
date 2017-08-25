@@ -24,7 +24,7 @@ fi
 
 # Inject DIST_ID into lsb-release
 R=`grep DISTRIB_RELEASE $(pwd)/lsb-release`; Y="-$DISK_ID"
-cat `pwd/`lsb-release | sed -e "s/$R/$R$Y/g" > $ROOTFS/etc/lsb-release.tmp 
+cat /etc/lsb-release | sed -e "s/$R/$R$Y/g" > $ROOTFS/etc/lsb-release.tmp 
 mv $ROOTFS/etc/lsb-release.tmp $ROOTFS/etc/lsb-release
 
 

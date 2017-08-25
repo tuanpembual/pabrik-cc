@@ -1,14 +1,11 @@
-From: Pabrik CD <cdimage@alynne.blankonlinux.or.id>
+From: Pabrik CD <cdimage@ananda.blankon.id>
 To: RECIPIENT
-Subject: Building of ISO DIST was a success! 
+Subject: Building of ISO DIST was a success!
 
 Hello,
 
 The building of ISO DIST was successful. You can download it here:
 PUBLISH_URL
-
-Today is better than yesterday:
-http://untung.blankon.in/
 
 Yours truly,
 Pabrik CD
