@@ -41,7 +41,7 @@ set -e
 
 mkdir -p $ROOTFS/etc/apt/sources.list.d
 cat << @@EOF > $ROOTFS/etc/apt/sources.list.d/local.list
-deb file:///$LOCAL_REPO_PATH $DIST main
+deb [trusted=yes] file:///$LOCAL_REPO_PATH $DIST main
 @@EOF
 
 refresh_repository
