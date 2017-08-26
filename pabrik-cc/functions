@@ -11,8 +11,8 @@ do_chroot() {
 }
 
 clean_packages() {
-    do_chroot apt-get --allow --yes clean
-    do_chroot apt-get --allow --yes autoremove
+    do_chroot apt-get -y clean
+    do_chroot apt-get -y autoremove
     rm -f $ROOTFS/var/lib/dpkg/*-old
     rm -f $ROOTFS/var/cache/debconf/*-old
 }
@@ -77,7 +77,7 @@ install_package() {
     setup_mounts
     mute_debconf
     echo "Installing $@"
-    do_chroot apt-get install --allow --yes $@
+    do_chroot apt install -y $@
     clean_packages
     unmute_debconf
     teardown_mounts
@@ -86,7 +86,7 @@ install_package() {
 
 install_package_unclean() {
     echo "Installing $@"
-    do_chroot apt-get install --allow --yes $@
+    do_chroot apt install -y $@
 }
 
 install_package_no_recommends() {
@@ -98,7 +98,7 @@ remove_package() {
     setup_mounts
     mute_debconf
     echo "Removing $@"
-    do_chroot apt-get purge --allow --yes $@
+    do_chroot apt-get purge --force-yes --yes $@
     clean_packages
     unmute_debconf
     teardown_mounts
@@ -115,8 +115,8 @@ check_mounts_and_dismount() {
 
 refresh_repository() {
     cp /etc/resolv.conf $ROOTFS/etc
-    do_chroot apt-get update
-    do_chroot apt-get --allow --yes upgrade
+    do_chroot apt update -y
+    do_chroot apt upgrade -y
 }
 
 record_names() {
@@ -193,10 +193,9 @@ reconciliate_packages() {
     setup_mounts
     mute_debconf
     do_chroot dpkg --set-selections < $ROOTFS/tmp/list
-    do_chroot apt-get --yes --allow -u dselect-upgrade
+    do_chroot apt-get --yes --force-yes -u dselect-upgrade
     clean_packages
     unmute_debconf
     teardown_mounts
     teardown_diversion
 }
-
