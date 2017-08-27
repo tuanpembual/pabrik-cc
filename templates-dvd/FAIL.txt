@@ -1,4 +1,4 @@
-From: Pabrik CD <cdimage@ananda.blankon.id>
+From: Pabrik CD <cdimage@alynne.blankonlinux.or.id>
 To: RECIPIENT
 Subject: Building of ISO DIST  was failed
 
