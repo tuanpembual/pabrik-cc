@@ -1,9 +1,9 @@
 case $ARCH in
   amd64|i386|armhf)
-    default_mirror http://ananda.blankon.or.id/blankon
+    default_mirror http://arsip-dev.blankonlinux.or.id/blankon
     ;;
   *)
-    default_mirror http://ananda.blankon.or.id/blankon
+    default_mirror http://arsip-dev.blankonlinux.or.id/blankon
     ;;
 esac
 mirror_style release
