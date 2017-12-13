@@ -1,4 +1,4 @@
-image: "debian:"
+image: "debian:9"
 
 stages:
   - deploy
