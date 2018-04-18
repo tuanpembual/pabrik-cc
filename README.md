@@ -46,4 +46,4 @@ $ sudo umount /path/to/pabrikcd/pabrik-cc-github/tmp/20170521-rootfs-amd64/dev/p
 ```
 
 ## Rilis
-`$ sudo ./release-image -d /home/cdimage/images/livecd-harian/$DATE/ -r 11.0 -p /home/cdimage/images/rilis/uluwatu/Jahitan-XX/`
+`$ sudo ./release-image -d /home/cdimage/images/livedvd-harian/$DATE/ -r 11.0 -p /home/cdimage/images/rilis/uluwatu/Jahitan-RC4/`
