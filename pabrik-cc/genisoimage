@@ -23,9 +23,16 @@ else
     ISOOPT="$ISOOPT -R -b boot/grub/eltorito.img"
 fi
 
+pushd $CC_DIR
+BLOBS=`pwd`/blobs
+popd
+
+ISOOPT="$ISOOPT --grub2-boot-info --grub2-mbr $BLOBS/hybrid.img -eltorito-alt-boot -e boot/grub/efiboot.img -isohybrid-gpt-basdat"
+
 # Generates the iso image
 pushd $TMP
-genisoimage ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
+#genisoimage ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso -J -l -cache-inodes -allow-multidot $DISK_BUILD
+xorriso -as mkisofs ${ISOOPT} -o $DIST-$VARIANT-$ARCH.iso $DISK_BUILD
 popd
 
 
