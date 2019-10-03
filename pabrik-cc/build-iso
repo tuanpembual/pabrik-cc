@@ -157,6 +157,16 @@ if [ -n $RECIPIENT -a -n $PUBLISH_URL ];then
     if [ -x /usr/bin/ttytter ];then
         /usr/bin/ttytter -status="$TMESSAGE"
     fi
+
+    echo "Sending notification via Telegram Bot"
+    if [ -x /usr/bin/telegram-notify ];then
+            if [ -z $CONTINUE ];then
+                    /usr/bin/telegram-notify --error --text "$TMESSAGE"
+            else
+                    /usr/bin/telegram-notify --success --text "$TMESSAGE"
+            fi
+    fi
+
 fi
 
 if [ -n $PUBLISH_PATH ];then
